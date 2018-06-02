@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="z">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    
+    <title>神经网络实践经验(4) | Kardel的魔法领域</title>
+    <meta name="renderer" content="webkit">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta name="description" content="前言地铁上无聊码的，思路比较凌乱
+
+现代神经网络的目标
+
+我认为，现代神经网络的目标只有两个
+
+过拟合与欠拟合的调试
+
+internal covariance shift过拟合和欠拟合的调试
+
+
+神经网络的过拟合与欠拟合一直是个恒古不变的话题
+如何能够防止神经网络产生没意义的特征工程和做出有意义的特征工程，就是这方面的一个问题
+mlp擅长过拟合，因为他会提取完全无关系的神经元之间的关系并作为特征。">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="神经网络实践经验(4) | Kardel的魔法领域">
+    <meta name="twitter:description" content="前言地铁上无聊码的，思路比较凌乱
+
+现代神经网络的目标
+
+我认为，现代神经网络的目标只有两个
+
+过拟合与欠拟合的调试
+
+internal covariance shift过拟合和欠拟合的调试
+
+
+神经网络的过拟合与欠拟合一直是个恒古不变的话题
+如何能够防止神经网络产生没意义的特征工程和做出有意义的特征工程，就是这方面的一个问题
+mlp擅长过拟合，因为他会提取完全无关系的神经元之间的关系并作为特征。">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="神经网络实践经验(4) | Kardel的魔法领域">
+    <meta property="og:description" content="前言地铁上无聊码的，思路比较凌乱
+
+现代神经网络的目标
+
+我认为，现代神经网络的目标只有两个
+
+过拟合与欠拟合的调试
+
+internal covariance shift过拟合和欠拟合的调试
+
+
+神经网络的过拟合与欠拟合一直是个恒古不变的话题
+如何能够防止神经网络产生没意义的特征工程和做出有意义的特征工程，就是这方面的一个问题
+mlp擅长过拟合，因为他会提取完全无关系的神经元之间的关系并作为特征。">
+
+    
+    <meta name="author" content="kardel">
+    
+    <link rel="stylesheet" href="/css/vno.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+
+    
+    <link rel="icon" href="/images/avatar-icon.png">
+    
+
+    <meta name="generator" content="hexo"/>
+    
+    <link rel="alternate" type="application/rss+xml" title="Kardel的魔法领域" href="/atom.xml">
+    
+
+    <link rel="canonical" href="http://yoursite.com/2018/06/02/神经网络实践经验-4/"/>
+
+                 
+</head>
+
+<body class="home-template no-js">
+    <script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <span class="mobile btn-mobile-menu">
+        <i class="fa fa-list btn-mobile-menu__icon"></i>
+        <i class="fa fa-angle-up btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+<header class="panel-cover panel-cover--collapsed" style="background-image: url(/images/background-cover.jpg)">
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        <a href="/" title="前往 Kardel的魔法领域 的主页"><img src="/images/avatar.jpg" width="80" alt="Kardel的魔法领域 logo" class="panel-cover__logo logo" /></a>
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage for Kardel的魔法领域">Kardel的魔法领域</a></h1>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description"></p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+
+        <div class="navigation-wrapper">
+          <div>
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+              <li class="navigation__item"><a href="/#blog" title="Visit the blog" class="blog-button">Blog</a></li>
+            
+              <li class="navigation__item"><a href="/aboutme">关于我</a></li>
+            
+            </ul>
+          </nav>
+          </div>
+          <div>
+          <nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+  <!-- Weibo-->
+  
+
+  <!-- Github -->
+  
+  <li class="navigation__item">
+    <a href="https://github.com/ChenKardel" title="GitHub" target="_blank">
+      <i class='social fa fa-github'></i>
+      <span class="label">Github</span>
+    </a>
+  </li>
+
+
+<!-- Stack Overflow -->
+        
+
+  <!-- Google Plus -->
+  
+
+<!-- Facebook -->
+
+  
+<!-- Twitter -->
+
+  
+
+  <li class="navigation__item">
+    <a href="/atom.xml" title="RSS" target="_blank">
+      <i class='social fa fa-rss'></i>
+      <span class="label">RSS</span>
+    </a>
+  </li>
+
+
+
+  </ul>
+</nav>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay cover-purple"></div>
+  </div> 
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <article class="post-container post-container--single">
+
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="2018-06-02T09:15:07.000Z" class="post-list__meta--date date">2018-06-02</time> &#8226; <span class="post-meta__tags tags">于 
+  <a class="tag-link" href="/tags/深度学习/">深度学习</a>, <a class="tag-link" href="/tags/神经网络实践经验/">神经网络实践经验</a>
+ </span>
+      <span class="page-pv">
+       Read <span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>
+      </span> 
+   
+    </div>
+    <h1 class="post-title">神经网络实践经验(4)</h1>
+  </header>
+
+  <section class="post">
+    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>地铁上无聊码的，思路比较凌乱</p>
+<ol start="4">
+<li>现代神经网络的目标</li>
+</ol>
+<p>我认为，现代神经网络的目标只有两个</p>
+<ol>
+<li><p>过拟合与欠拟合的调试</p>
+</li>
+<li><p>internal covariance shift<br>过拟合和欠拟合的调试</p>
+</li>
+</ol>
+<p>神经网络的过拟合与欠拟合一直是个恒古不变的话题</p>
+<p>如何能够防止神经网络产生没意义的特征工程和做出有意义的特征工程，就是这方面的一个问题</p>
+<p>mlp擅长过拟合，因为他会提取完全无关系的神经元之间的关系并作为特征。而局部连接的一些神经网络可以减少这样的操作。</p>
+<p>但cnn也不是完全都恰当好处的特征提取，所以在架构与架构之间产生非常大的差别，nin和alexnet的参数数量可以差十倍却有差不多的效果</p>
+<p>神经网络都追求较少的参数，也是希望减少过拟合</p>
+<p>与传统机器学习方法不同，神经网络增加模型容量可谓是简单至极。你希望的话，可以把cnn叠个一万层</p>
+<p>分分钟过拟合</p>
+<p>所以大部分情况下都是在解决过拟合问题</p>
+<p>很多网络架构都在探究用最少的参数做出最好的效果，即减少过拟合程度，也是如此</p>
+<h2 id="internal-covariance-shift"><a href="#internal-covariance-shift" class="headerlink" title="internal covariance shift"></a>internal covariance shift</h2><p>（不是很会翻这个词，内部协变量转移？一下简称ics了）</p>
+<p>（一点注意的是ics和covariance shift不同。covariance指的是模型在testing和training集的差，而ics就是梯度爆炸和梯度消失神马的）</p>
+<p>ics：the change during training due to the change in parameters（《batch normalization》）</p>
+<p>我擅自将其解释为类似梯度爆炸和梯度消失的问题</p>
+<p>这是我第一次看到这个词的定义</p>
+<p>但是相似描述的情景在densenet和resnet的论文中也有描述</p>
+<p>过深的网络不好训练，训练的结果也不太好</p>
+<p>现代很多网络的研究就在于解决这个问题</p>
+<p>batch normalization通过标准化来解决这个问题，同时用两个可学习的参数去减轻标准化对特征的破坏</p>
+<p>densenet和resnet都通过较远的神经元的连接的方式去减轻这个问题</p>
+<p>当然resnet和densenet思路有点小不同</p>
+<p>resnet想学习的是ΔW</p>
+<p>densenet疯狂地追求前后连接</p>
+<p>但本质差不多（densenet如是说）</p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>本文只是一个大二学生的粗鄙之语</p>
+<p>自己还是论文看少了</p>
+<p>比如resnet和densenet都提到的一个f什么net我就没看</p>
+<p>还有其实很多问题，神经网络也不像我说的这么简单</p>
+<p>就当以上内容纯属虚构和胡说八道吧</p>
+
+  </section>
+
+</article>
+
+<section class="read-more">
+           
+    
+               
+            <div class="read-more-item">
+                <span class="read-more-item-dim">Newer Post</span>
+                <h2 class="post-list__post-title post-title"><a href="/2018/06/02/DeLiGAN-对于多样性和有限数据的GAN/" title="DeLiGAN: 对于多样性和有限数据的GAN">DeLiGAN: 对于多样性和有限数据的GAN</a></h2>
+                <p class="excerpt">
+                
+                开始遨游CVPR2017，主要是为了学习更多的深度学习网络架构
+讲道理计算机视觉的深度学习架构是深度学习各领域比较先进的，比如CNN，自编码器，GAN，注意力机制都是出于CV然后应用于其他领域的。所以即使我不学CV了还是要看CVPR的论文
+论文本身
+DeLiGAN
+
+讨论一下GAN的缺点:
+
+Mod
+                &hellip;
+                </p>
+                <div class="post-list__meta"><time datetime="2018-06-02T09:21:32.000Z" class="post-list__meta--date date">2018-06-02</time> &#8226; <span class="post-list__meta--tags tags">于 
+  <a class="tag-link" href="/tags/深度学习/">深度学习</a>, <a class="tag-link" href="/tags/计算机视觉/">计算机视觉</a>, <a class="tag-link" href="/tags/论文解析/">论文解析</a>
+</span><a class="btn-border-small" href="/2018/06/02/DeLiGAN-对于多样性和有限数据的GAN/">继续阅读</a></div>
+                           
+            </div>
+        
+        
+               
+            <div class="read-more-item">
+                <span class="read-more-item-dim">Older Post</span>
+                <h2 class="post-list__post-title post-title"><a href="/2018/06/02/神经网络实践经验-3/" title="神经网络实践经验(3)">神经网络实践经验(3)</a></h2>
+                <p class="excerpt">
+                
+                3. 慎用keras的binary_crossentropy有的时候我们在用神经网络训练二分类模型的时候，我们常会用keras。keras关于二分类的loss function有两个，一个是binary_crossentropy，一个是categorical_crossentropy（其实是多分类）
+                &hellip;
+                </p>
+                <div class="post-list__meta"><time datetime="2018-06-02T09:13:42.000Z" class="post-list__meta--date date">2018-06-02</time> &#8226; <span class="post-list__meta--tags tags">于 
+  <a class="tag-link" href="/tags/深度学习/">深度学习</a>, <a class="tag-link" href="/tags/神经网络实践经验/">神经网络实践经验</a>
+</span><a class="btn-border-small" href="/2018/06/02/神经网络实践经验-3/">继续阅读</a></div>
+                       
+            </div>
+        
+     
+   
+   
+  
+</section>
+
+  
+
+            <footer class="footer">
+    <span class="footer__copyright">
+        &copy; 2018 kardel - 本站点采用 <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>
+       
+    </span>
+    <span class="footer__copyright">
+             - 基于 <a href="http://hexo.io">Hexo</a> 搭建，使用 <a href="https://github.com/monniya/hexo-theme-new-vno ">new-vno</a> 主题，由<a href="https://monniya.com ">@Monniya</a> 修改自 <a href="https://github.com/lenbo-ma/hexo-theme-vno" target="_blank">Vno</a>, 原创出自<a href="http://github.com/onevcat/vno" target="_blank">onevcat</a>
+         </span>
+       
+    
+    
+</footer>
+
+
+        </div>
+    </div>
+
+     
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-78918255-1', 'auto');
+	ga('send', 'pageview');
+</script>
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?9cdad07c755fa23f6aced510c6760e87";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    
+</body>
+</html>

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="z">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    
+    <title>通过深度学习增强药药反应和药食反应的预测效果 | Kardel的魔法领域</title>
+    <meta name="renderer" content="webkit">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta name="description" content="[TOC]
+前言还是不要不务正业了，重新回到DDI的怀抱之中。（笑）
+这篇是PNAS（美国科学院）的论文，还是有点分量的……虽然我觉得有点水
+本篇文章主要讲的是基于深度学习的药物副作用与药物宇食物的作用的预测。
+背景药与药(drug-drug interaction，DDI)，药与食物(drug-food constituent interaction，DFI)之间会产生极其大的反应，其中有很多恶">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="通过深度学习增强药药反应和药食反应的预测效果 | Kardel的魔法领域">
+    <meta name="twitter:description" content="[TOC]
+前言还是不要不务正业了，重新回到DDI的怀抱之中。（笑）
+这篇是PNAS（美国科学院）的论文，还是有点分量的……虽然我觉得有点水
+本篇文章主要讲的是基于深度学习的药物副作用与药物宇食物的作用的预测。
+背景药与药(drug-drug interaction，DDI)，药与食物(drug-food constituent interaction，DFI)之间会产生极其大的反应，其中有很多恶">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="通过深度学习增强药药反应和药食反应的预测效果 | Kardel的魔法领域">
+    <meta property="og:description" content="[TOC]
+前言还是不要不务正业了，重新回到DDI的怀抱之中。（笑）
+这篇是PNAS（美国科学院）的论文，还是有点分量的……虽然我觉得有点水
+本篇文章主要讲的是基于深度学习的药物副作用与药物宇食物的作用的预测。
+背景药与药(drug-drug interaction，DDI)，药与食物(drug-food constituent interaction，DFI)之间会产生极其大的反应，其中有很多恶">
+
+    
+    <meta name="author" content="kardel">
+    
+    <link rel="stylesheet" href="/css/vno.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+
+    
+    <link rel="icon" href="/images/avatar-icon.png">
+    
+
+    <meta name="generator" content="hexo"/>
+    
+    <link rel="alternate" type="application/rss+xml" title="Kardel的魔法领域" href="/atom.xml">
+    
+
+    <link rel="canonical" href="http://yoursite.com/2018/06/02/通过深度学习增强药药反应和药食反应的预测效果/"/>
+
+                 
+</head>
+
+<body class="home-template no-js">
+    <script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <span class="mobile btn-mobile-menu">
+        <i class="fa fa-list btn-mobile-menu__icon"></i>
+        <i class="fa fa-angle-up btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+<header class="panel-cover panel-cover--collapsed" style="background-image: url(/images/background-cover.jpg)">
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        <a href="/" title="前往 Kardel的魔法领域 的主页"><img src="/images/avatar.jpg" width="80" alt="Kardel的魔法领域 logo" class="panel-cover__logo logo" /></a>
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage for Kardel的魔法领域">Kardel的魔法领域</a></h1>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description"></p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+
+        <div class="navigation-wrapper">
+          <div>
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+              <li class="navigation__item"><a href="/#blog" title="Visit the blog" class="blog-button">Blog</a></li>
+            
+              <li class="navigation__item"><a href="/aboutme">关于我</a></li>
+            
+            </ul>
+          </nav>
+          </div>
+          <div>
+          <nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+  <!-- Weibo-->
+  
+
+  <!-- Github -->
+  
+  <li class="navigation__item">
+    <a href="https://github.com/ChenKardel" title="GitHub" target="_blank">
+      <i class='social fa fa-github'></i>
+      <span class="label">Github</span>
+    </a>
+  </li>
+
+
+<!-- Stack Overflow -->
+        
+
+  <!-- Google Plus -->
+  
+
+<!-- Facebook -->
+
+  
+<!-- Twitter -->
+
+  
+
+  <li class="navigation__item">
+    <a href="/atom.xml" title="RSS" target="_blank">
+      <i class='social fa fa-rss'></i>
+      <span class="label">RSS</span>
+    </a>
+  </li>
+
+
+
+  </ul>
+</nav>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay cover-purple"></div>
+  </div> 
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <article class="post-container post-container--single">
+
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="2018-06-02T09:34:48.000Z" class="post-list__meta--date date">2018-06-02</time> &#8226; <span class="post-meta__tags tags">于 
+  <a class="tag-link" href="/tags/二十一世纪科学（滑稽）/">二十一世纪科学（滑稽）</a>, <a class="tag-link" href="/tags/深度学习/">深度学习</a>
+ </span>
+      <span class="page-pv">
+       Read <span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>
+      </span> 
+   
+    </div>
+    <h1 class="post-title">通过深度学习增强药药反应和药食反应的预测效果</h1>
+  </header>
+
+  <section class="post">
+    <p>[TOC]</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>还是不要不务正业了，重新回到DDI的怀抱之中。（笑）</p>
+<p>这篇是PNAS（美国科学院）的论文，还是有点分量的……虽然我觉得有点水</p>
+<p>本篇文章主要讲的是基于深度学习的药物副作用与药物宇食物的作用的预测。</p>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>药与药(drug-drug interaction，DDI)，药与食物(drug-food constituent interaction，DFI)之间会产生极其大的反应，其中有很多恶性的反应（adverse drug events, ADE)，也有良性的反应。我们药减少恶性的反应并且增加良性的反应。</p>
+<p>作者主要描述了基于深度学习的DDI和DFI的预测，模型名为DeepDDI。</p>
+<h2 id="方法与实验"><a href="#方法与实验" class="headerlink" title="方法与实验"></a>方法与实验</h2><p>作者使用了深度学习的方法进行DDI的预测，将DDI作为86类分类器（具体哪八十六类，可以参考<a href="http://www.pnas.org/content/suppl/2018/04/14/1803294115.DCSupplemental" target="_blank" rel="noopener">deep-ddi所有数据文件</a>的dataset-S01）。<br><img src="/2018/06/02/通过深度学习增强药药反应和药食反应的预测效果/structure.bmp" alt="structure"></p>
+<p>上图是模型主要架构</p>
+<p><img src="/2018/06/02/通过深度学习增强药药反应和药食反应的预测效果/preprocess.bmp" alt="preprocess"></p>
+<p>可以看见，将药物的SMILES（simplified molecular-input line-entry system，简化分子线性输入规范，用于描述一个化学物质的结构）输入，并且可以生成SSP（structural similarity profile，药物的特征向量，可以描述给定药物的独特结构特征）</p>
+<p>ps：SSP我google+百度了半天没查到，可能SSP是他们原创的方法</p>
+<p><img src="/2018/06/02/通过深度学习增强药药反应和药食反应的预测效果/pca.bmp" alt="pca"></p>
+<p>SSP可以对某个单独的药物描述结构性特征。计算方法是与所有的2159个DrugBank中的药物的ECFP4（<a href="https://docs.chemaxon.com/display/docs/Extended+Connectivity+Fingerprint+ECFP#ExtendedConnectivityFingerprintECFP-morganref" target="_blank" rel="noopener">illustration of ECFP4</a>）经行比对。通过计算对每个药物的ECFP4的Tanimoto系数$T(A,B)={A\cdot B\over |A|^2+|B|^2-A\cdot B}$来算出SSP。</p>
+<p>ECFP4使用Python库RDKit计算的。</p>
+<p>计算出SSP之后，再使用PCA将SSP向量降维到50维。最后将两个50维的PCA输入到DNN中进行多分类。</p>
+<p>ps: 作者再这里说PCA降维到10、20、30、40、50维都试验过，最终确定了50维是最好的</p>
+<p>DNN我不用多说，注意输入为100维，代表了两种药物PCA降维后的维数和。输出有86种，代表了86类的多分类器。设置了一个阈值，超过这个阈值者就算作有这一类 ，设为1；否则设为0。最优的阈值维0.47</p>
+<p>隐藏层的激活函数是ReLU，输出层的激活函数是sigmoid</p>
+<p>用了Batch Normalization</p>
+<p>Loss function是交叉熵</p>
+<p>优化方法是Adam算法</p>
+<p>代码层面用了Keras + Tensorflow后台</p>
+<p>注意使用了<strong>GTX1080GPU</strong>运算（其实没啥……就是想到我那破1060就想哭）</p>
+<p>训练还是老套路60%，20%，20%的分配，跑100次</p>
+<p>DeepDDI最终可以生成人类可读的语句。</p>
+<p>比如</p>
+<p>羟考酮（oxycodone，阿片类止痛药）与阿扎那韦（atazanavir，抗转录药物）的反应会被描述成</p>
+<p>“与阿扎那韦共同作用时，羟考酮的代谢效应会减少”</p>
+<p>“当阿扎那韦与羟考酮共同作用时，不利反应的严重性或概率会增加”</p>
+<h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2><p>较之间的运算方法，DeepDDI有很多优点，比如：</p>
+<ol>
+<li>其他的很多计算方法并没有很好的描述药与药之间的反应，而DeepDDI可以输出人类可读的语句。</li>
+<li>其他的很多计算方法需要极其详细的药物信息就比如说药物的靶，有反应的药物，副作用。而DeepDDI是基于SMILES的方法，需要的信息比较单一</li>
+<li>DeepDDI的精度极高，大约92%</li>
+<li>SSP比两种最好的向量生成方法（Molecular Autoencoder, Mol2vec）都更加精确</li>
+</ol>
+<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><ol>
+<li>神经网络的可解释性不强</li>
+</ol>
+<p>##相关的工作</p>
+<p>之前也有基于Deep Learning的DDI的工作。</p>
+<p><a href="https://www.researchgate.net/publication/292590022_Drug-Drug_Interaction_Extraction_via_Convolutional_Neural_Networks" target="_blank" rel="noopener">Drug Drug interaction extraction via convolutional nerual network</a></p>
+<p><a href="https://arxiv.org/abs/1705.03261" target="_blank" rel="noopener">Drug-drug Interaction Extraction via Recurrent Neural Network with  Multiple Attention Layers</a></p>
+<p><a href="http://xueshu.baidu.com/s?wd=paperuri%3A%282e9868021c33c158792dbd97f7d74bbd%29&amp;filter=sc_long_sign&amp;tn=SE_xueshusource_2kduw22v&amp;sc_vurl=http%3A%2F%2Fwww.ncbi.nlm.nih.gov%2Fpmc%2Farticles%2FPMC5751524%2Fpdf%2F12859_2017_Article_1962.pdf&amp;ie=utf-8&amp;sc_us=8702312857461780960" target="_blank" rel="noopener">Dependency-based long short term memory network for drug-drug interaction extraction</a></p>
+<p>与本篇不同的是，这些工作很多事基于复杂网络研究的DDI，而本文可以说是基于相识度（化学成分结构）的DDI。</p>
+<h2 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h2><p>使用的数据是gold standard DDI dataset from DrugBank（<a href="http://www.pnas.org/content/suppl/2018/04/14/1803294115.DCSupplemental" target="_blank" rel="noopener">deep-ddi所有数据文件</a>的dataset-S02），包含了192284种DDI反应</p>
+<p>虽然这个并不是输出一个one-hot向量，但是其实只有406(0.2%)的药物与药物对被检测有两种及以上的反应，而191472(99.8%)的药物与药物对之间只有一种反应。（PS：可不可以最后输出的时候用Softmax而不是Sigmoid，因为只有0.2%的多种反应）</p>
+<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><p>原文给出了起码三个应用场景</p>
+<ul>
+<li>在gold standard DDI dataset中我们发现只有14种DDI类别是明确的有害的类别，其他的DDI情况不明或者是依赖药物施用环境。因此如果我们使用了某种药物（比如用环磷酰胺去治疗癌症）我们可以通过替换他的对应的拥有同样药理效果的药物（贝利司他，氨羟二磷酸二钠，苏灵大）去减少副作用（心脏中毒的概率）。</li>
+<li>我们可以通过DDI的类型去判断药物是否有“恶性副作用”。如果DNN输出的类型小于阈值0.47，则就视为没有</li>
+<li>我们可以用于判断药物与食物成分的共同作用（DFI）。一些特定的食物会减少一些药物的效果。就比如说，治疗高血压的三十个药物的体内浓度（这里翻译不好……意会，意会）可以被潜在的食物成分，比如左旋谷氨酸、左谷酰胺、 亚精胺，减少。多价正离子，比如$Al^{3+}$、$Mg^{2+}$，可以造成药物的治疗失败。</li>
+</ul>
+<h2 id="讨论"><a href="#讨论" class="headerlink" title="讨论"></a>讨论</h2><ol>
+<li>三及多个药物的DDI并没有研究——造成无法研究的原因是数据库的缺乏（如果有这样的数据库的话我认为用RNN/LSTM/GRU可以解）</li>
+<li>DeepDDI的可解释性有待研究（Deep learning的原罪……）</li>
+<li>很多其他的数据，比如转录组数据可以被使用</li>
+</ol>
+<h2 id="我的想法"><a href="#我的想法" class="headerlink" title="我的想法"></a>我的想法</h2><ol>
+<li>PCA有没有更好的解决方案？能不能用其他的方法（比如构造自编码器之类的（瞎编））代替PCA</li>
+<li>DNN的改善方法？可不可以想其他的网络而不是MLP？</li>
+<li><strong>讨论</strong>中的一些问题还有可进步的地方</li>
+<li>代码我暂时没看，RDKit很难配，可能根据代码出一篇博客</li>
+<li>看不懂的化学生物问题不要紧，我也不懂（逃ε=ε=ε=┏(゜ロ゜;)┛）</li>
+<li>这篇的一个特点就是它是基于化学结构与成分的Deep learning based DDI，而不是基于复杂网络的DDI</li>
+</ol>
+
+  </section>
+
+</article>
+
+<section class="read-more">
+           
+    
+        
+        
+               
+            <div class="read-more-item">
+                <span class="read-more-item-dim">Older Post</span>
+                <h2 class="post-list__post-title post-title"><a href="/2018/06/02/Pix2pix-基于条件对抗网络图对图翻译/" title="Pix2pix:基于条件对抗网络图对图翻译">Pix2pix:基于条件对抗网络图对图翻译</a></h2>
+                <p class="excerpt">
+                
+                Pix2pix:基于条件对抗网络图对图翻译我现在正在研究GAN，GAN也正是我的兴趣方向之一。
+本篇要讲的是pix2pix，讲道理，那个网页版我可以玩一年
+Pix2pix官网
+pix2pix论文
+Pix2pix的github
+（注：原代码是用torch写的，但是作者也在官网提供了tensorflow
+                &hellip;
+                </p>
+                <div class="post-list__meta"><time datetime="2018-06-02T09:30:06.000Z" class="post-list__meta--date date">2018-06-02</time> &#8226; <span class="post-list__meta--tags tags">于 
+  <a class="tag-link" href="/tags/深度学习/">深度学习</a>, <a class="tag-link" href="/tags/计算机视觉/">计算机视觉</a>, <a class="tag-link" href="/tags/论文解析/">论文解析</a>
+</span><a class="btn-border-small" href="/2018/06/02/Pix2pix-基于条件对抗网络图对图翻译/">继续阅读</a></div>
+                       
+            </div>
+        
+     
+   
+   
+  
+</section>
+
+  
+
+            <footer class="footer">
+    <span class="footer__copyright">
+        &copy; 2018 kardel - 本站点采用 <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>
+       
+    </span>
+    <span class="footer__copyright">
+             - 基于 <a href="http://hexo.io">Hexo</a> 搭建，使用 <a href="https://github.com/monniya/hexo-theme-new-vno ">new-vno</a> 主题，由<a href="https://monniya.com ">@Monniya</a> 修改自 <a href="https://github.com/lenbo-ma/hexo-theme-vno" target="_blank">Vno</a>, 原创出自<a href="http://github.com/onevcat/vno" target="_blank">onevcat</a>
+         </span>
+       
+    
+    
+</footer>
+
+
+        </div>
+    </div>
+
+     
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-78918255-1', 'auto');
+	ga('send', 'pageview');
+</script>
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?9cdad07c755fa23f6aced510c6760e87";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    
+</body>
+</html>

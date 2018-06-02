@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="z">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    
+    <title>神经网络实践经验(2) | Kardel的魔法领域</title>
+    <meta name="renderer" content="webkit">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta name="description" content="前言本人萌新，请多指教
+2. 1x1卷积层的作用我们都知道，CNN强于MLP的地方在于其局部连接性减少了过拟合的可能，从而在有限的数据量下可以获取更好的模型。
+而CNN是一个基于上下文的网络。对于上下文相关的数据（图像、自然语言等），有着非常理所应当、有理有据的好效果。但是如果filter的大小是1x1呢（本文只探讨2d的CNN，如果要强行说Conv1D我也没办法）?
+1x1的filter貌似是上">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="神经网络实践经验(2) | Kardel的魔法领域">
+    <meta name="twitter:description" content="前言本人萌新，请多指教
+2. 1x1卷积层的作用我们都知道，CNN强于MLP的地方在于其局部连接性减少了过拟合的可能，从而在有限的数据量下可以获取更好的模型。
+而CNN是一个基于上下文的网络。对于上下文相关的数据（图像、自然语言等），有着非常理所应当、有理有据的好效果。但是如果filter的大小是1x1呢（本文只探讨2d的CNN，如果要强行说Conv1D我也没办法）?
+1x1的filter貌似是上">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="神经网络实践经验(2) | Kardel的魔法领域">
+    <meta property="og:description" content="前言本人萌新，请多指教
+2. 1x1卷积层的作用我们都知道，CNN强于MLP的地方在于其局部连接性减少了过拟合的可能，从而在有限的数据量下可以获取更好的模型。
+而CNN是一个基于上下文的网络。对于上下文相关的数据（图像、自然语言等），有着非常理所应当、有理有据的好效果。但是如果filter的大小是1x1呢（本文只探讨2d的CNN，如果要强行说Conv1D我也没办法）?
+1x1的filter貌似是上">
+
+    
+    <meta name="author" content="kardel">
+    
+    <link rel="stylesheet" href="/css/vno.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+
+    
+    <link rel="icon" href="/images/avatar-icon.png">
+    
+
+    <meta name="generator" content="hexo"/>
+    
+    <link rel="alternate" type="application/rss+xml" title="Kardel的魔法领域" href="/atom.xml">
+    
+
+    <link rel="canonical" href="http://yoursite.com/2018/06/02/神经网络实践经验-2/"/>
+
+                 
+</head>
+
+<body class="home-template no-js">
+    <script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <span class="mobile btn-mobile-menu">
+        <i class="fa fa-list btn-mobile-menu__icon"></i>
+        <i class="fa fa-angle-up btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+<header class="panel-cover panel-cover--collapsed" style="background-image: url(/images/background-cover.jpg)">
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        <a href="/" title="前往 Kardel的魔法领域 的主页"><img src="/images/avatar.jpg" width="80" alt="Kardel的魔法领域 logo" class="panel-cover__logo logo" /></a>
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage for Kardel的魔法领域">Kardel的魔法领域</a></h1>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description"></p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+
+        <div class="navigation-wrapper">
+          <div>
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+              <li class="navigation__item"><a href="/#blog" title="Visit the blog" class="blog-button">Blog</a></li>
+            
+              <li class="navigation__item"><a href="/aboutme">关于我</a></li>
+            
+            </ul>
+          </nav>
+          </div>
+          <div>
+          <nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+  <!-- Weibo-->
+  
+
+  <!-- Github -->
+  
+  <li class="navigation__item">
+    <a href="https://github.com/ChenKardel" title="GitHub" target="_blank">
+      <i class='social fa fa-github'></i>
+      <span class="label">Github</span>
+    </a>
+  </li>
+
+
+<!-- Stack Overflow -->
+        
+
+  <!-- Google Plus -->
+  
+
+<!-- Facebook -->
+
+  
+<!-- Twitter -->
+
+  
+
+  <li class="navigation__item">
+    <a href="/atom.xml" title="RSS" target="_blank">
+      <i class='social fa fa-rss'></i>
+      <span class="label">RSS</span>
+    </a>
+  </li>
+
+
+
+  </ul>
+</nav>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay cover-purple"></div>
+  </div> 
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <article class="post-container post-container--single">
+
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="2018-06-02T09:07:42.000Z" class="post-list__meta--date date">2018-06-02</time> &#8226; <span class="post-meta__tags tags">于 
+  <a class="tag-link" href="/tags/深度学习/">深度学习</a>, <a class="tag-link" href="/tags/神经网络实践经验/">神经网络实践经验</a>
+ </span>
+      <span class="page-pv">
+       Read <span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>
+      </span> 
+   
+    </div>
+    <h1 class="post-title">神经网络实践经验(2)</h1>
+  </header>
+
+  <section class="post">
+    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本人萌新，请多指教</p>
+<h2 id="2-1x1卷积层的作用"><a href="#2-1x1卷积层的作用" class="headerlink" title="2. 1x1卷积层的作用"></a>2. 1x1卷积层的作用</h2><p>我们都知道，CNN强于MLP的地方在于其局部连接性减少了过拟合的可能，从而在有限的数据量下可以获取更好的模型。</p>
+<p>而CNN是一个基于上下文的网络。对于上下文相关的数据（图像、自然语言等），有着非常理所应当、有理有据的好效果。但是如果filter的大小是1x1呢（本文只探讨2d的CNN，如果要强行说Conv1D我也没办法）?</p>
+<p>1x1的filter貌似是上下文无关的。所以1x1的filter与3x3的filter和5x5的filter有着完全不一样的功能。</p>
+<p>本萌新读的论文不多，但我记得1x1filter在VGG论文<a href="http://x-algo.cn/wp-content/uploads/2017/01/VERY-DEEP-CONVOLUTIONAL-NETWORK-SFOR-LARGE-SCALE-IMAGE-RECOGNITION.pdf" target="_blank" rel="noopener">VERY DEEP CONVOLUTIONAL NETWORKS FOR LARGE-SCALE IMAGE RECOGNITION</a>中出现过。VGG指出有1x1的卷积层（VGG的C号架构）物体识别效果比没有（VGG的B号架构）效果好，但是没有3x3的卷积层（VGG的D号架构）效果好。但是并没有给出解释。（顺便一提我认为VGG是ImageNet几篇中最水的一篇，全篇就是在说他用了谁的方法没用谁的方法然后做做做做做实验）</p>
+<p>然后1x1的使用比较引起轰动就是在<a href="https://arxiv.org/pdf/1312.4400.pdf" target="_blank" rel="noopener">Network in Network</a>中。《Network in Network》整篇论文写的玄乎得要死，什么mlpconv啊什么得，但是实际上观察它得代码就会发现所谓得mlpconv就是1x1得卷积层。仔细想想也是那么回事，实际上1x1的filter由于卷积神经网络的操作已经可以退化为卷积层每个通道的加权求和，然后通过一层激活函数就和单层mlp无异。虽然3x3的卷积核也会有加权求和的操作，但是1x1的卷积核是脱离了上下文的加权求和操作，而3x3是带上下文的加权求和操作</p>
+<p><img src="/2018/06/02/神经网络实践经验-2/nin.png" alt="Network in network"></p>
+<p>再然后就是Inception中的降维1x1了，我可以将一个28x28x64的卷积层强行压到28x28x20的卷积层，既不增加很多参数数量又能减少卷积层的参数数量，还能加权求和一波，简直非常好用。</p>
+<p><img src="/2018/06/02/神经网络实践经验-2/inception.png" alt="inception"></p>
+<p>包括resNet中的先降维后升维的操作同理，既可以降低参数数量又可以保持x与F(x)形状不变，可以说是很棒了<img src="/2018/06/02/神经网络实践经验-2/C:/Users\11145\Desktop\bimg\resNet.png" alt="resNet"></p>
+<p><img src="/2018/06/02/神经网络实践经验-2/resNet.png" alt="resnet"></p>
+<p>所以总结一下，1x1的filter的作用是</p>
+<ol>
+<li>增加通道之间的交流</li>
+<li>降维或升维</li>
+</ol>
+
+  </section>
+
+</article>
+
+<section class="read-more">
+           
+    
+               
+            <div class="read-more-item">
+                <span class="read-more-item-dim">Newer Post</span>
+                <h2 class="post-list__post-title post-title"><a href="/2018/06/02/神经网络实践经验-3/" title="神经网络实践经验(3)">神经网络实践经验(3)</a></h2>
+                <p class="excerpt">
+                
+                3. 慎用keras的binary_crossentropy有的时候我们在用神经网络训练二分类模型的时候，我们常会用keras。keras关于二分类的loss function有两个，一个是binary_crossentropy，一个是categorical_crossentropy（其实是多分类）
+                &hellip;
+                </p>
+                <div class="post-list__meta"><time datetime="2018-06-02T09:13:42.000Z" class="post-list__meta--date date">2018-06-02</time> &#8226; <span class="post-list__meta--tags tags">于 
+  <a class="tag-link" href="/tags/深度学习/">深度学习</a>, <a class="tag-link" href="/tags/神经网络实践经验/">神经网络实践经验</a>
+</span><a class="btn-border-small" href="/2018/06/02/神经网络实践经验-3/">继续阅读</a></div>
+                           
+            </div>
+        
+        
+               
+            <div class="read-more-item">
+                <span class="read-more-item-dim">Older Post</span>
+                <h2 class="post-list__post-title post-title"><a href="/2018/06/02/神经网络实践经验-1/" title="神经网络实践经验(1)">神经网络实践经验(1)</a></h2>
+                <p class="excerpt">
+                
+                前言本系列是本人记录在自己实践中遇到的很多读死书无法学习到的经验，不完全脱离理论，甚至说是超过理论之外的东西。
+本人水平很差（深度学习之耻），有些说的简陋的东西也当是献丑了。
+1. 神经网络的输入最好有一定相关性，否则很容易产生过拟合的效果所谓的过拟合，就是模型学习到本应该学习到的特征之外的特征。
+
+                &hellip;
+                </p>
+                <div class="post-list__meta"><time datetime="2018-06-02T08:54:58.000Z" class="post-list__meta--date date">2018-06-02</time> &#8226; <span class="post-list__meta--tags tags">于 
+  <a class="tag-link" href="/tags/深度学习/">深度学习</a>, <a class="tag-link" href="/tags/神经网络实践经验/">神经网络实践经验</a>
+</span><a class="btn-border-small" href="/2018/06/02/神经网络实践经验-1/">继续阅读</a></div>
+                       
+            </div>
+        
+     
+   
+   
+  
+</section>
+
+  
+
+            <footer class="footer">
+    <span class="footer__copyright">
+        &copy; 2018 kardel - 本站点采用 <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>
+       
+    </span>
+    <span class="footer__copyright">
+             - 基于 <a href="http://hexo.io">Hexo</a> 搭建，使用 <a href="https://github.com/monniya/hexo-theme-new-vno ">new-vno</a> 主题，由<a href="https://monniya.com ">@Monniya</a> 修改自 <a href="https://github.com/lenbo-ma/hexo-theme-vno" target="_blank">Vno</a>, 原创出自<a href="http://github.com/onevcat/vno" target="_blank">onevcat</a>
+         </span>
+       
+    
+    
+</footer>
+
+
+        </div>
+    </div>
+
+     
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-78918255-1', 'auto');
+	ga('send', 'pageview');
+</script>
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?9cdad07c755fa23f6aced510c6760e87";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    
+</body>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="z">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    
+    <title>DeLiGAN: 对于多样性和有限数据的GAN | Kardel的魔法领域</title>
+    <meta name="renderer" content="webkit">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta name="description" content="开始遨游CVPR2017，主要是为了学习更多的深度学习网络架构
+讲道理计算机视觉的深度学习架构是深度学习各领域比较先进的，比如CNN，自编码器，GAN，注意力机制都是出于CV然后应用于其他领域的。所以即使我不学CV了还是要看CVPR的论文
+论文本身
+DeLiGAN
+
+讨论一下GAN的缺点:
+
+Mode Collapse：当GAN无法达到识别网络D每趟的运行次数大于生成网络G的时候，生成网络生成的所">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="DeLiGAN: 对于多样性和有限数据的GAN | Kardel的魔法领域">
+    <meta name="twitter:description" content="开始遨游CVPR2017，主要是为了学习更多的深度学习网络架构
+讲道理计算机视觉的深度学习架构是深度学习各领域比较先进的，比如CNN，自编码器，GAN，注意力机制都是出于CV然后应用于其他领域的。所以即使我不学CV了还是要看CVPR的论文
+论文本身
+DeLiGAN
+
+讨论一下GAN的缺点:
+
+Mode Collapse：当GAN无法达到识别网络D每趟的运行次数大于生成网络G的时候，生成网络生成的所">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="DeLiGAN: 对于多样性和有限数据的GAN | Kardel的魔法领域">
+    <meta property="og:description" content="开始遨游CVPR2017，主要是为了学习更多的深度学习网络架构
+讲道理计算机视觉的深度学习架构是深度学习各领域比较先进的，比如CNN，自编码器，GAN，注意力机制都是出于CV然后应用于其他领域的。所以即使我不学CV了还是要看CVPR的论文
+论文本身
+DeLiGAN
+
+讨论一下GAN的缺点:
+
+Mode Collapse：当GAN无法达到识别网络D每趟的运行次数大于生成网络G的时候，生成网络生成的所">
+
+    
+    <meta name="author" content="kardel">
+    
+    <link rel="stylesheet" href="/css/vno.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+
+    
+    <link rel="icon" href="/images/avatar-icon.png">
+    
+
+    <meta name="generator" content="hexo"/>
+    
+    <link rel="alternate" type="application/rss+xml" title="Kardel的魔法领域" href="/atom.xml">
+    
+
+    <link rel="canonical" href="http://yoursite.com/2018/06/02/DeLiGAN-对于多样性和有限数据的GAN/"/>
+
+                 
+</head>
+
+<body class="home-template no-js">
+    <script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <span class="mobile btn-mobile-menu">
+        <i class="fa fa-list btn-mobile-menu__icon"></i>
+        <i class="fa fa-angle-up btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+<header class="panel-cover panel-cover--collapsed" style="background-image: url(/images/background-cover.jpg)">
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        <a href="/" title="前往 Kardel的魔法领域 的主页"><img src="/images/avatar.jpg" width="80" alt="Kardel的魔法领域 logo" class="panel-cover__logo logo" /></a>
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage for Kardel的魔法领域">Kardel的魔法领域</a></h1>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description"></p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+
+        <div class="navigation-wrapper">
+          <div>
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+              <li class="navigation__item"><a href="/#blog" title="Visit the blog" class="blog-button">Blog</a></li>
+            
+              <li class="navigation__item"><a href="/aboutme">关于我</a></li>
+            
+            </ul>
+          </nav>
+          </div>
+          <div>
+          <nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+  <!-- Weibo-->
+  
+
+  <!-- Github -->
+  
+  <li class="navigation__item">
+    <a href="https://github.com/ChenKardel" title="GitHub" target="_blank">
+      <i class='social fa fa-github'></i>
+      <span class="label">Github</span>
+    </a>
+  </li>
+
+
+<!-- Stack Overflow -->
+        
+
+  <!-- Google Plus -->
+  
+
+<!-- Facebook -->
+
+  
+<!-- Twitter -->
+
+  
+
+  <li class="navigation__item">
+    <a href="/atom.xml" title="RSS" target="_blank">
+      <i class='social fa fa-rss'></i>
+      <span class="label">RSS</span>
+    </a>
+  </li>
+
+
+
+  </ul>
+</nav>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay cover-purple"></div>
+  </div> 
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <article class="post-container post-container--single">
+
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="2018-06-02T09:21:32.000Z" class="post-list__meta--date date">2018-06-02</time> &#8226; <span class="post-meta__tags tags">于 
+  <a class="tag-link" href="/tags/深度学习/">深度学习</a>, <a class="tag-link" href="/tags/计算机视觉/">计算机视觉</a>, <a class="tag-link" href="/tags/论文解析/">论文解析</a>
+ </span>
+      <span class="page-pv">
+       Read <span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>
+      </span> 
+   
+    </div>
+    <h1 class="post-title">DeLiGAN: 对于多样性和有限数据的GAN</h1>
+  </header>
+
+  <section class="post">
+    <p>开始遨游CVPR2017，主要是为了学习更多的深度学习网络架构</p>
+<p>讲道理计算机视觉的深度学习架构是深度学习各领域比较先进的，比如CNN，自编码器，GAN，注意力机制都是出于CV然后应用于其他领域的。所以即使我不学CV了还是要看CVPR的论文</p>
+<p>论文本身</p>
+<p><a href="http://openaccess.thecvf.com/content_cvpr_2017/papers/Gurumurthy_DeLiGAN__Generative_CVPR_2017_paper.pdf" target="_blank" rel="noopener">DeLiGAN</a></p>
+<ol>
+<li><p>讨论一下GAN的缺点:</p>
+</li>
+<li><p>Mode Collapse：当GAN无法达到识别网络D每趟的运行次数大于生成网络G的时候，生成网络生成的所有内容都将归于同样的对象，比如训练GAN for MNIST最后所有的生成内容都为1</p>
+</li>
+<li><p>训练速度慢，训练吃数据：原始GAN的生成网络与识别网络都是MLP（不是很懂为什么）。较CNN来说，MLP更吃数据而且运行速度更慢</p>
+</li>
+<li><p>GAN生成数据的多样性来自于GAN的生成者输入的噪音N。原始GAN的噪音是高斯噪音。而这篇文章主要的重点，笔者认为在于尝试去用一个有点想Batch Normalization的方式去学习噪声输入<img src="/2018/06/02/DeLiGAN-对于多样性和有限数据的GAN/strcutureGAN.bmp" alt="strcutureGAN"></p>
+</li>
+</ol>
+<p>图右就是DeLiGAN的结构。可以看到，DeLiGAN在输入的时候进行了变化。</p>
+<p>DeLiGAN使输入噪音通过一个高斯混合模型（Mixture-of-Gaussian model）</p>
+<p>$$p_z(z) = \sum_{i=1}^N\phi_ig(z|\mu_i, \Sigma)​$$</p>
+<p>其中$\phi_i$是权值，也是采用重参数单元（我使用的是指的是$g(z|\mu_i, \Sigma)$ ）的概率。在文章中$\phi$ 使用的是uniform概率，即原公式变为</p>
+<p>$p_z(z) = \sum_{i=1}^N\frac{g(z|\mu_i, \Sigma)}{N}$</p>
+<p>我们随机的从N个重参数单元中选取一个，每一个选取概率相同</p>
+<p>假设第$i$个单元被选择。我们将输入重新定义为</p>
+<p>$z = \mu_i+\sigma_i \epsilon where \epsilon \sim N(0, 1)$    </p>
+<p>将其代入GAN的模型，可以将原模型变为：</p>
+<p>$p_{data}(G(z))=\sum_{i=1}^N\int\frac{p_{data}(G(\mu_i+\sigma_i\epsilon |\epsilon))p(\epsilon)d\epsilon}{N}$</p>
+<p>其中$\mu$ 和$\sigma$ 都是应该学习的参数</p>
+<p>3.学习$\mu$与$\sigma$</p>
+<p>notice：作者说明为什么不试着在单元的地方使用权值参数：因为无法正常训练，无法得到权值的梯度</p>
+<p>由于$p_{data}(G(z))$在$\mu_i$处有局部最小值，所以当G优化$\sigma$ 的时候，$\sigma$可以小于0。为了避免这个，我们尝试在GAN网络                  基础上用L2正则化</p>
+<p>$max_GV_G(D, G)=min_G\mathbb{E}_{z\sim p_z}[log(1-D(G(z)))]+\lambda\sum_{i=1}^N\frac{(1-\sigma_i)^2}{N}$</p>
+<ol start="4">
+<li>实验</li>
+</ol>
+<p>这个论文实验最有意思的地方在于他对不同的数据库用不同的架构<img src="/2018/06/02/DeLiGAN-对于多样性和有限数据的GAN/differentArc.bmp" alt="differentArc"></p>
+<p>可以看出，他用了Inceptive的结构，这对于某些网络结构有非常好的效果。</p>
+<p><img src="/2018/06/02/DeLiGAN-对于多样性和有限数据的GAN/result.bmp" alt="result"></p>
+<p>从h-m中看出，效果大概比GAN好（j-m是它定义的一些架构，就不描述了）</p>
+<ol start="5">
+<li>我的想法</li>
+</ol>
+<p>我觉得……还行吧，暂时没有运行过。整体比较玄学，并没有解释为什么这个设计好与好在哪，我只能说输入从普通的高斯噪音变成了加强版的高斯输出</p>
+<p>我认为单元的设计有点像Dropout + ensemble。</p>
+<p>我懂为什么对多样性有帮助，但是并不是很懂对limited data有什么帮助</p>
+
+  </section>
+
+</article>
+
+<section class="read-more">
+           
+    
+               
+            <div class="read-more-item">
+                <span class="read-more-item-dim">Newer Post</span>
+                <h2 class="post-list__post-title post-title"><a href="/2018/06/02/Pix2pix-基于条件对抗网络图对图翻译/" title="Pix2pix:基于条件对抗网络图对图翻译">Pix2pix:基于条件对抗网络图对图翻译</a></h2>
+                <p class="excerpt">
+                
+                Pix2pix:基于条件对抗网络图对图翻译我现在正在研究GAN，GAN也正是我的兴趣方向之一。
+本篇要讲的是pix2pix，讲道理，那个网页版我可以玩一年
+Pix2pix官网
+pix2pix论文
+Pix2pix的github
+（注：原代码是用torch写的，但是作者也在官网提供了tensorflow
+                &hellip;
+                </p>
+                <div class="post-list__meta"><time datetime="2018-06-02T09:30:06.000Z" class="post-list__meta--date date">2018-06-02</time> &#8226; <span class="post-list__meta--tags tags">于 
+  <a class="tag-link" href="/tags/深度学习/">深度学习</a>, <a class="tag-link" href="/tags/计算机视觉/">计算机视觉</a>, <a class="tag-link" href="/tags/论文解析/">论文解析</a>
+</span><a class="btn-border-small" href="/2018/06/02/Pix2pix-基于条件对抗网络图对图翻译/">继续阅读</a></div>
+                           
+            </div>
+        
+        
+               
+            <div class="read-more-item">
+                <span class="read-more-item-dim">Older Post</span>
+                <h2 class="post-list__post-title post-title"><a href="/2018/06/02/神经网络实践经验-4/" title="神经网络实践经验(4)">神经网络实践经验(4)</a></h2>
+                <p class="excerpt">
+                
+                前言地铁上无聊码的，思路比较凌乱
+
+现代神经网络的目标
+
+我认为，现代神经网络的目标只有两个
+
+过拟合与欠拟合的调试
+
+internal covariance shift过拟合和欠拟合的调试
+
+
+神经网络的过拟合与欠拟合一直是个恒古不变的话题
+如何能够防止神经网络产生没意义的特征工程和做出有意义的特
+                &hellip;
+                </p>
+                <div class="post-list__meta"><time datetime="2018-06-02T09:15:07.000Z" class="post-list__meta--date date">2018-06-02</time> &#8226; <span class="post-list__meta--tags tags">于 
+  <a class="tag-link" href="/tags/深度学习/">深度学习</a>, <a class="tag-link" href="/tags/神经网络实践经验/">神经网络实践经验</a>
+</span><a class="btn-border-small" href="/2018/06/02/神经网络实践经验-4/">继续阅读</a></div>
+                       
+            </div>
+        
+     
+   
+   
+  
+</section>
+
+  
+
+            <footer class="footer">
+    <span class="footer__copyright">
+        &copy; 2018 kardel - 本站点采用 <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>
+       
+    </span>
+    <span class="footer__copyright">
+             - 基于 <a href="http://hexo.io">Hexo</a> 搭建，使用 <a href="https://github.com/monniya/hexo-theme-new-vno ">new-vno</a> 主题，由<a href="https://monniya.com ">@Monniya</a> 修改自 <a href="https://github.com/lenbo-ma/hexo-theme-vno" target="_blank">Vno</a>, 原创出自<a href="http://github.com/onevcat/vno" target="_blank">onevcat</a>
+         </span>
+       
+    
+  
+         <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"], linebreaks: { automatic:true }, EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50) },
+        tex2jax: { inlineMath: [ ["$", "$"], ["\\(","\\)"] ], processEscapes: true, ignoreClass: "tex2jax_ignore|dno",skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']},
+        TeX: {  noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } }, Macros: { href: "{}" } },
+        messageStyle: "none"
+    }); 
+    
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+   
+</footer>
+
+
+        </div>
+    </div>
+
+     
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-78918255-1', 'auto');
+	ga('send', 'pageview');
+</script>
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?9cdad07c755fa23f6aced510c6760e87";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    
+</body>
+</html>

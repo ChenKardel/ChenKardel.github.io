@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Kardel的魔法领域</title>
+  
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://yoursite.com/"/>
+  <updated>2018-06-02T09:37:21.881Z</updated>
+  <id>http://yoursite.com/</id>
+  
+  <author>
+    <name>kardel</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>通过深度学习增强药药反应和药食反应的预测效果</title>
+    <link href="http://yoursite.com/2018/06/02/%E9%80%9A%E8%BF%87%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%A2%9E%E5%BC%BA%E8%8D%AF%E8%8D%AF%E5%8F%8D%E5%BA%94%E5%92%8C%E8%8D%AF%E9%A3%9F%E5%8F%8D%E5%BA%94%E7%9A%84%E9%A2%84%E6%B5%8B%E6%95%88%E6%9E%9C/"/>
+    <id>http://yoursite.com/2018/06/02/通过深度学习增强药药反应和药食反应的预测效果/</id>
+    <published>2018-06-02T09:34:48.000Z</published>
+    <updated>2018-06-02T09:37:21.881Z</updated>
+    
+    <content type="html"><![CDATA[<p>[TOC]</p><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>还是不要不务正业了，重新回到DDI的怀抱之中。（笑）</p><p>这篇是PNAS（美国科学院）的论文，还是有点分量的……虽然我觉得有点水</p><p>本篇文章主要讲的是基于深度学习的药物副作用与药物宇食物的作用的预测。</p><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>药与药(drug-drug interaction，DDI)，药与食物(drug-food constituent interaction，DFI)之间会产生极其大的反应，其中有很多恶性的反应（adverse drug events, ADE)，也有良性的反应。我们药减少恶性的反应并且增加良性的反应。</p><p>作者主要描述了基于深度学习的DDI和DFI的预测，模型名为DeepDDI。</p><h2 id="方法与实验"><a href="#方法与实验" class="headerlink" title="方法与实验"></a>方法与实验</h2><p>作者使用了深度学习的方法进行DDI的预测，将DDI作为86类分类器（具体哪八十六类，可以参考<a href="http://www.pnas.org/content/suppl/2018/04/14/1803294115.DCSupplemental" target="_blank" rel="noopener">deep-ddi所有数据文件</a>的dataset-S01）。<br><img src="/2018/06/02/通过深度学习增强药药反应和药食反应的预测效果/structure.bmp" alt="structure"></p><p>上图是模型主要架构</p><p><img src="/2018/06/02/通过深度学习增强药药反应和药食反应的预测效果/preprocess.bmp" alt="preprocess"></p><p>可以看见，将药物的SMILES（simplified molecular-input line-entry system，简化分子线性输入规范，用于描述一个化学物质的结构）输入，并且可以生成SSP（structural similarity profile，药物的特征向量，可以描述给定药物的独特结构特征）</p><p>ps：SSP我google+百度了半天没查到，可能SSP是他们原创的方法</p><p><img src="/2018/06/02/通过深度学习增强药药反应和药食反应的预测效果/pca.bmp" alt="pca"></p><p>SSP可以对某个单独的药物描述结构性特征。计算方法是与所有的2159个DrugBank中的药物的ECFP4（<a href="https://docs.chemaxon.com/display/docs/Extended+Connectivity+Fingerprint+ECFP#ExtendedConnectivityFingerprintECFP-morganref" target="_blank" rel="noopener">illustration of ECFP4</a>）经行比对。通过计算对每个药物的ECFP4的Tanimoto系数$T(A,B)={A\cdot B\over |A|^2+|B|^2-A\cdot B}$来算出SSP。</p><p>ECFP4使用Python库RDKit计算的。</p><p>计算出SSP之后，再使用PCA将SSP向量降维到50维。最后将两个50维的PCA输入到DNN中进行多分类。</p><p>ps: 作者再这里说PCA降维到10、20、30、40、50维都试验过，最终确定了50维是最好的</p><p>DNN我不用多说，注意输入为100维，代表了两种药物PCA降维后的维数和。输出有86种，代表了86类的多分类器。设置了一个阈值，超过这个阈值者就算作有这一类 ，设为1；否则设为0。最优的阈值维0.47</p><p>隐藏层的激活函数是ReLU，输出层的激活函数是sigmoid</p><p>用了Batch Normalization</p><p>Loss function是交叉熵</p><p>优化方法是Adam算法</p><p>代码层面用了Keras + Tensorflow后台</p><p>注意使用了<strong>GTX1080GPU</strong>运算（其实没啥……就是想到我那破1060就想哭）</p><p>训练还是老套路60%，20%，20%的分配，跑100次</p><p>DeepDDI最终可以生成人类可读的语句。</p><p>比如</p><p>羟考酮（oxycodone，阿片类止痛药）与阿扎那韦（atazanavir，抗转录药物）的反应会被描述成</p><p>“与阿扎那韦共同作用时，羟考酮的代谢效应会减少”</p><p>“当阿扎那韦与羟考酮共同作用时，不利反应的严重性或概率会增加”</p><h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2><p>较之间的运算方法，DeepDDI有很多优点，比如：</p><ol><li>其他的很多计算方法并没有很好的描述药与药之间的反应，而DeepDDI可以输出人类可读的语句。</li><li>其他的很多计算方法需要极其详细的药物信息就比如说药物的靶，有反应的药物，副作用。而DeepDDI是基于SMILES的方法，需要的信息比较单一</li><li>DeepDDI的精度极高，大约92%</li><li>SSP比两种最好的向量生成方法（Molecular Autoencoder, Mol2vec）都更加精确</li></ol><h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><ol><li>神经网络的可解释性不强</li></ol><p>##相关的工作</p><p>之前也有基于Deep Learning的DDI的工作。</p><p><a href="https://www.researchgate.net/publication/292590022_Drug-Drug_Interaction_Extraction_via_Convolutional_Neural_Networks" target="_blank" rel="noopener">Drug Drug interaction extraction via convolutional nerual network</a></p><p><a href="https://arxiv.org/abs/1705.03261" target="_blank" rel="noopener">Drug-drug Interaction Extraction via Recurrent Neural Network with  Multiple Attention Layers</a></p><p><a href="http://xueshu.baidu.com/s?wd=paperuri%3A%282e9868021c33c158792dbd97f7d74bbd%29&amp;filter=sc_long_sign&amp;tn=SE_xueshusource_2kduw22v&amp;sc_vurl=http%3A%2F%2Fwww.ncbi.nlm.nih.gov%2Fpmc%2Farticles%2FPMC5751524%2Fpdf%2F12859_2017_Article_1962.pdf&amp;ie=utf-8&amp;sc_us=8702312857461780960" target="_blank" rel="noopener">Dependency-based long short term memory network for drug-drug interaction extraction</a></p><p>与本篇不同的是，这些工作很多事基于复杂网络研究的DDI，而本文可以说是基于相识度（化学成分结构）的DDI。</p><h2 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h2><p>使用的数据是gold standard DDI dataset from DrugBank（<a href="http://www.pnas.org/content/suppl/2018/04/14/1803294115.DCSupplemental" target="_blank" rel="noopener">deep-ddi所有数据文件</a>的dataset-S02），包含了192284种DDI反应</p><p>虽然这个并不是输出一个one-hot向量，但是其实只有406(0.2%)的药物与药物对被检测有两种及以上的反应，而191472(99.8%)的药物与药物对之间只有一种反应。（PS：可不可以最后输出的时候用Softmax而不是Sigmoid，因为只有0.2%的多种反应）</p><h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><p>原文给出了起码三个应用场景</p><ul><li>在gold standard DDI dataset中我们发现只有14种DDI类别是明确的有害的类别，其他的DDI情况不明或者是依赖药物施用环境。因此如果我们使用了某种药物（比如用环磷酰胺去治疗癌症）我们可以通过替换他的对应的拥有同样药理效果的药物（贝利司他，氨羟二磷酸二钠，苏灵大）去减少副作用（心脏中毒的概率）。</li><li>我们可以通过DDI的类型去判断药物是否有“恶性副作用”。如果DNN输出的类型小于阈值0.47，则就视为没有</li><li>我们可以用于判断药物与食物成分的共同作用（DFI）。一些特定的食物会减少一些药物的效果。就比如说，治疗高血压的三十个药物的体内浓度（这里翻译不好……意会，意会）可以被潜在的食物成分，比如左旋谷氨酸、左谷酰胺、 亚精胺，减少。多价正离子，比如$Al^{3+}$、$Mg^{2+}$，可以造成药物的治疗失败。</li></ul><h2 id="讨论"><a href="#讨论" class="headerlink" title="讨论"></a>讨论</h2><ol><li>三及多个药物的DDI并没有研究——造成无法研究的原因是数据库的缺乏（如果有这样的数据库的话我认为用RNN/LSTM/GRU可以解）</li><li>DeepDDI的可解释性有待研究（Deep learning的原罪……）</li><li>很多其他的数据，比如转录组数据可以被使用</li></ol><h2 id="我的想法"><a href="#我的想法" class="headerlink" title="我的想法"></a>我的想法</h2><ol><li>PCA有没有更好的解决方案？能不能用其他的方法（比如构造自编码器之类的（瞎编））代替PCA</li><li>DNN的改善方法？可不可以想其他的网络而不是MLP？</li><li><strong>讨论</strong>中的一些问题还有可进步的地方</li><li>代码我暂时没看，RDKit很难配，可能根据代码出一篇博客</li><li>看不懂的化学生物问题不要紧，我也不懂（逃ε=ε=ε=┏(゜ロ゜;)┛）</li><li>这篇的一个特点就是它是基于化学结构与成分的Deep learning based DDI，而不是基于复杂网络的DDI</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;[TOC]&lt;/p&gt;
+&lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;还是不要不务正业了，重新回到DDI的怀抱之中。（笑）&lt;/p&gt;
+&lt;p&gt;这篇是PNAS（美国科学院）的论文，还是有点分
+      
+    
+    </summary>
+    
+    
+      <category term="深度学习" scheme="http://yoursite.com/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
+    
+      <category term="二十一世纪科学（滑稽）" scheme="http://yoursite.com/tags/%E4%BA%8C%E5%8D%81%E4%B8%80%E4%B8%96%E7%BA%AA%E7%A7%91%E5%AD%A6%EF%BC%88%E6%BB%91%E7%A8%BD%EF%BC%89/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Pix2pix:基于条件对抗网络图对图翻译</title>
+    <link href="http://yoursite.com/2018/06/02/Pix2pix-%E5%9F%BA%E4%BA%8E%E6%9D%A1%E4%BB%B6%E5%AF%B9%E6%8A%97%E7%BD%91%E7%BB%9C%E5%9B%BE%E5%AF%B9%E5%9B%BE%E7%BF%BB%E8%AF%91/"/>
+    <id>http://yoursite.com/2018/06/02/Pix2pix-基于条件对抗网络图对图翻译/</id>
+    <published>2018-06-02T09:30:06.000Z</published>
+    <updated>2018-06-02T09:41:18.605Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Pix2pix-基于条件对抗网络图对图翻译"><a href="#Pix2pix-基于条件对抗网络图对图翻译" class="headerlink" title="Pix2pix:基于条件对抗网络图对图翻译"></a>Pix2pix:基于条件对抗网络图对图翻译</h1><p>我现在正在研究GAN，GAN也正是我的兴趣方向之一。</p><p>本篇要讲的是pix2pix，讲道理，那个网页版我可以玩一年</p><p><a href="https://phillipi.github.io/pix2pix/" target="_blank" rel="noopener">Pix2pix官网</a></p><p><a href="https://arxiv.org/pdf/1611.07004.pdf" target="_blank" rel="noopener">pix2pix论文</a></p><p><a href="https://github.com/phillipi/pix2pix" target="_blank" rel="noopener">Pix2pix的github</a></p><p>（注：原代码是用torch写的，但是作者也在官网提供了tensorflow版和pytorch版。起码不用面对lua这个语言）</p><p><img src="/2018/06/02/Pix2pix-基于条件对抗网络图对图翻译/header.bmp" alt="header"></p><h2 id="图像翻译"><a href="#图像翻译" class="headerlink" title="图像翻译"></a>图像翻译</h2><p>“翻译”常用于语言之间的翻译，就比如中文和英文的之间的翻译。但是图像翻译的意思是以不同形式在图与图之间转换。比如，一张场景可以转换为RGB全彩图，也可以转化成素描，也可以转化为灰度图。一张夜景图也可以转化为这个地方的日景图。</p><p>传统的来说，每一种转换，比如从灰度图到素描，或者从素描到灰度图，都是需要一种特定的算法。而Pix2pix的目标就是建立一个通用的架构去解决所有的这些问题。</p><p>自编码器与CNN，为了使loss function更小而不得不使生成出来的图片模糊。这些对loss function有益的行为最终导致的是生成很假的图片（讲个道理，模糊的原因与很多自编码器采取sigmoid有没有关系？笔者觉得使用leaky relu可能会减少模糊，但是笔者试过，效果不算好）GAN提供了一种生成精准图片的方法，原因是识别网络完全能判断出模糊的图像是假图。</p><p>这在里，作者使用了条件GAN（cGAN）去学习一个条件生成模型。</p><h2 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h2><h3 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h3><p>cGAN的损失可以表达为：</p><p>$\mathcal{L}<em>{cGAN}(G,D)=\mathbb{E}</em>\mathrm{x,y}[log D(x, y)]+\mathbb{E}_\mathrm{x,z}[log(1-D(x, G(x,z)))]$</p><p>可以看出，较普通的GAN来说，cGAN的生成网络监听了输入x。</p><p>普通的GAN的形式是</p><p>$\mathcal{L}<em>{GAN}(G,D)=\mathbb{E}</em>\mathrm{y}[log D(x, y)]+\mathbb{E}_\mathrm{x,z}[log(1-D(x, G(x,z)))]$</p><p>可以明显看出，这个形式的生成网络不需要输入x</p><p>研究表明如果给GAN加上一个传统距离（regularization?），比如L2，GAN的表现更好。而Pix2pix使用的是L1架构，可以减少模糊程度</p><p>$\mathcal{L}<em>{L1}(G)=\mathbb{E}</em>\mathrm{x,y,z}[\Arrowvert y-G(x,z)\Arrowvert_1]$</p><p>所以最终的loss function是</p><p>$G^*=argmin_Gmax_D\mathcal{L}<em>{cGAN}(G,D)+\lambda\mathcal{L}</em>{L1}(G)$</p><p>原版GAN中的噪音noise，在这里变成了dropout形似的</p><p>###网络架构</p><h4 id="生成网络：U-net"><a href="#生成网络：U-net" class="headerlink" title="生成网络：U-net"></a>生成网络：U-net</h4><p>由于是个conditional GAN，这个生成者是个自编码器（输入一张图片大小，输出一张图片大小）。但是较传统用自编码器的写法不同，作者使用了U-Net<br><img src="/2018/06/02/Pix2pix-基于条件对抗网络图对图翻译/Unet.bmp" alt="Unet"></p><p>U-Net的论文具体可以看</p><p><a href="https://arxiv.org/pdf/1505.04597.pdf" target="_blank" rel="noopener">U-Net: Convolutional Networks for Biomedical Image Segmentation</a></p><p>这篇论文（虽然我没看（逃））</p><p>U-Net在Autoencoder的基础上，使用了skip-connection。这么做的原因在于很多网络需要讲input的低阶信息分享给output。</p><p>skip-connection的特点在于将decoder和encoder连接起来。貌似与ResNet的链接有一定相像，都是相加（不确定，如果有大佬矫正的话请评论）。从上图也可以看到U-net的架构。</p><h4 id="识别网络-PatchGAN"><a href="#识别网络-PatchGAN" class="headerlink" title="识别网络: PatchGAN"></a>识别网络: PatchGAN</h4><p>L2 损失比L1损失更加容易产生模糊效益。所以在网络架构上我们会采取L1去解决问题。</p><p>因为我们已经可以通过L1获取低频的结构，我们想要获取高频出现的架构。于是我们采取了PatchGAN的架构。PatchGAN只会去判定每一个每一个小的$N*N$的Patch中的结构是真或假并且惩罚它。并且计算平均数作为最终的结果。</p><p>这是个马尔科夫过程，也可以理解为风格损失（局部的）</p><h4 id="优化和推断"><a href="#优化和推断" class="headerlink" title="优化和推断"></a>优化和推断</h4><p>优化没啥可说的，mini batch SGD</p><p>推断注意使用了dropout和batch normalization。training batch 被设为1，这个操作被叫做“instance normalization”</p><h3 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h3><p>一般为了效率我不喜欢看Experiment部分……很多Experiment都是作者自己吹比……但是这个Experiment不知道有多劲爆……</p><h4 id="评价标准"><a href="#评价标准" class="headerlink" title="评价标准"></a>评价标准</h4><p>两种手法</p><ol><li><p>Amazon  Mechanical Turk（AMT）</p><p>这个……感觉事50个Turker去评价算法生成……</p><p>感觉这个是真人评价……有点屌……</p></li><li><p>FCN-score</p><p>是采用的语言分段的算法做的评价</p></li></ol><p>一些实验的结论：</p><ol><li><p>生成网络：U-Net的效果是最好的</p></li><li><p>识别网络：L1+cGAN的效果比L1/L1+GAN/cGAN/GAN都好</p></li><li><p>PatchGAN的N：在70的时候表现是最好的</p><p><img src="/2018/06/02/Pix2pix-基于条件对抗网络图对图翻译/patchGAN.bmp" alt="patchGAN"><br>可以看出在$1<em>1$–&gt;$16</em>16$的趋势下图像越来越清晰，并且FCN-score逐渐增高，颜色以越来越相近，到$70<em>70$打到顶峰。但是较$70</em>70$，$286<em>286$的画质非常差而且FCN-score非常低。可能是由于$286</em>286$需要太多参数，训练复杂</p></li></ol><p>顺便提一点，这个网络的目的不是与输入图相同，而是做出一个以假乱真的假图，所以不会与原图经行任何比对。可以说生成图和原图是独立的。</p><p>在颜色上，L1会使图像便暗（我的理解是L1的稀疏性会使图像朝变暗的趋势靠拢），而cGAN完全没有这个问题。所以L1+cGAN可以保持生成图片颜色的鲜艳。</p><p>最后就是这个网络的结果，非常有意思<br><img src="/2018/06/02/Pix2pix-基于条件对抗网络图对图翻译/result1.bmp" alt="result1"><br>还有我自己画的“猫”（我知道有点吓人……）<br><img src="/2018/06/02/Pix2pix-基于条件对抗网络图对图翻译/result2.bmp" alt="result2"><br><img src="/2018/06/02/Pix2pix-基于条件对抗网络图对图翻译/result3.bmp" alt="result3"></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;Pix2pix-基于条件对抗网络图对图翻译&quot;&gt;&lt;a href=&quot;#Pix2pix-基于条件对抗网络图对图翻译&quot; class=&quot;headerlink&quot; title=&quot;Pix2pix:基于条件对抗网络图对图翻译&quot;&gt;&lt;/a&gt;Pix2pix:基于条件对抗网络图对图翻译&lt;/
+      
+    
+    </summary>
+    
+    
+      <category term="深度学习" scheme="http://yoursite.com/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
+    
+      <category term="论文解析" scheme="http://yoursite.com/tags/%E8%AE%BA%E6%96%87%E8%A7%A3%E6%9E%90/"/>
+    
+      <category term="计算机视觉" scheme="http://yoursite.com/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>DeLiGAN: 对于多样性和有限数据的GAN</title>
+    <link href="http://yoursite.com/2018/06/02/DeLiGAN-%E5%AF%B9%E4%BA%8E%E5%A4%9A%E6%A0%B7%E6%80%A7%E5%92%8C%E6%9C%89%E9%99%90%E6%95%B0%E6%8D%AE%E7%9A%84GAN/"/>
+    <id>http://yoursite.com/2018/06/02/DeLiGAN-对于多样性和有限数据的GAN/</id>
+    <published>2018-06-02T09:21:32.000Z</published>
+    <updated>2018-06-02T09:33:32.170Z</updated>
+    
+    <content type="html"><![CDATA[<p>开始遨游CVPR2017，主要是为了学习更多的深度学习网络架构</p><p>讲道理计算机视觉的深度学习架构是深度学习各领域比较先进的，比如CNN，自编码器，GAN，注意力机制都是出于CV然后应用于其他领域的。所以即使我不学CV了还是要看CVPR的论文</p><p>论文本身</p><p><a href="http://openaccess.thecvf.com/content_cvpr_2017/papers/Gurumurthy_DeLiGAN__Generative_CVPR_2017_paper.pdf" target="_blank" rel="noopener">DeLiGAN</a></p><ol><li><p>讨论一下GAN的缺点:</p></li><li><p>Mode Collapse：当GAN无法达到识别网络D每趟的运行次数大于生成网络G的时候，生成网络生成的所有内容都将归于同样的对象，比如训练GAN for MNIST最后所有的生成内容都为1</p></li><li><p>训练速度慢，训练吃数据：原始GAN的生成网络与识别网络都是MLP（不是很懂为什么）。较CNN来说，MLP更吃数据而且运行速度更慢</p></li><li><p>GAN生成数据的多样性来自于GAN的生成者输入的噪音N。原始GAN的噪音是高斯噪音。而这篇文章主要的重点，笔者认为在于尝试去用一个有点想Batch Normalization的方式去学习噪声输入<img src="/2018/06/02/DeLiGAN-对于多样性和有限数据的GAN/strcutureGAN.bmp" alt="strcutureGAN"></p></li></ol><p>图右就是DeLiGAN的结构。可以看到，DeLiGAN在输入的时候进行了变化。</p><p>DeLiGAN使输入噪音通过一个高斯混合模型（Mixture-of-Gaussian model）</p><p>$$p_z(z) = \sum_{i=1}^N\phi_ig(z|\mu_i, \Sigma)​$$</p><p>其中$\phi_i$是权值，也是采用重参数单元（我使用的是指的是$g(z|\mu_i, \Sigma)$ ）的概率。在文章中$\phi$ 使用的是uniform概率，即原公式变为</p><p>$p_z(z) = \sum_{i=1}^N\frac{g(z|\mu_i, \Sigma)}{N}$</p><p>我们随机的从N个重参数单元中选取一个，每一个选取概率相同</p><p>假设第$i$个单元被选择。我们将输入重新定义为</p><p>$z = \mu_i+\sigma_i \epsilon where \epsilon \sim N(0, 1)$    </p><p>将其代入GAN的模型，可以将原模型变为：</p><p>$p_{data}(G(z))=\sum_{i=1}^N\int\frac{p_{data}(G(\mu_i+\sigma_i\epsilon |\epsilon))p(\epsilon)d\epsilon}{N}$</p><p>其中$\mu$ 和$\sigma$ 都是应该学习的参数</p><p>3.学习$\mu$与$\sigma$</p><p>notice：作者说明为什么不试着在单元的地方使用权值参数：因为无法正常训练，无法得到权值的梯度</p><p>由于$p_{data}(G(z))$在$\mu_i$处有局部最小值，所以当G优化$\sigma$ 的时候，$\sigma$可以小于0。为了避免这个，我们尝试在GAN网络                  基础上用L2正则化</p><p>$max_GV_G(D, G)=min_G\mathbb{E}_{z\sim p_z}[log(1-D(G(z)))]+\lambda\sum_{i=1}^N\frac{(1-\sigma_i)^2}{N}$</p><ol start="4"><li>实验</li></ol><p>这个论文实验最有意思的地方在于他对不同的数据库用不同的架构<img src="/2018/06/02/DeLiGAN-对于多样性和有限数据的GAN/differentArc.bmp" alt="differentArc"></p><p>可以看出，他用了Inceptive的结构，这对于某些网络结构有非常好的效果。</p><p><img src="/2018/06/02/DeLiGAN-对于多样性和有限数据的GAN/result.bmp" alt="result"></p><p>从h-m中看出，效果大概比GAN好（j-m是它定义的一些架构，就不描述了）</p><ol start="5"><li>我的想法</li></ol><p>我觉得……还行吧，暂时没有运行过。整体比较玄学，并没有解释为什么这个设计好与好在哪，我只能说输入从普通的高斯噪音变成了加强版的高斯输出</p><p>我认为单元的设计有点像Dropout + ensemble。</p><p>我懂为什么对多样性有帮助，但是并不是很懂对limited data有什么帮助</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;开始遨游CVPR2017，主要是为了学习更多的深度学习网络架构&lt;/p&gt;
+&lt;p&gt;讲道理计算机视觉的深度学习架构是深度学习各领域比较先进的，比如CNN，自编码器，GAN，注意力机制都是出于CV然后应用于其他领域的。所以即使我不学CV了还是要看CVPR的论文&lt;/p&gt;
+&lt;p&gt;论文本
+      
+    
+    </summary>
+    
+    
+      <category term="深度学习" scheme="http://yoursite.com/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
+    
+      <category term="论文解析" scheme="http://yoursite.com/tags/%E8%AE%BA%E6%96%87%E8%A7%A3%E6%9E%90/"/>
+    
+      <category term="计算机视觉" scheme="http://yoursite.com/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>神经网络实践经验(4)</title>
+    <link href="http://yoursite.com/2018/06/02/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%AE%9E%E8%B7%B5%E7%BB%8F%E9%AA%8C-4/"/>
+    <id>http://yoursite.com/2018/06/02/神经网络实践经验-4/</id>
+    <published>2018-06-02T09:15:07.000Z</published>
+    <updated>2018-06-02T09:19:16.208Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>地铁上无聊码的，思路比较凌乱</p><ol start="4"><li>现代神经网络的目标</li></ol><p>我认为，现代神经网络的目标只有两个</p><ol><li><p>过拟合与欠拟合的调试</p></li><li><p>internal covariance shift<br>过拟合和欠拟合的调试</p></li></ol><p>神经网络的过拟合与欠拟合一直是个恒古不变的话题</p><p>如何能够防止神经网络产生没意义的特征工程和做出有意义的特征工程，就是这方面的一个问题</p><p>mlp擅长过拟合，因为他会提取完全无关系的神经元之间的关系并作为特征。而局部连接的一些神经网络可以减少这样的操作。</p><p>但cnn也不是完全都恰当好处的特征提取，所以在架构与架构之间产生非常大的差别，nin和alexnet的参数数量可以差十倍却有差不多的效果</p><p>神经网络都追求较少的参数，也是希望减少过拟合</p><p>与传统机器学习方法不同，神经网络增加模型容量可谓是简单至极。你希望的话，可以把cnn叠个一万层</p><p>分分钟过拟合</p><p>所以大部分情况下都是在解决过拟合问题</p><p>很多网络架构都在探究用最少的参数做出最好的效果，即减少过拟合程度，也是如此</p><h2 id="internal-covariance-shift"><a href="#internal-covariance-shift" class="headerlink" title="internal covariance shift"></a>internal covariance shift</h2><p>（不是很会翻这个词，内部协变量转移？一下简称ics了）</p><p>（一点注意的是ics和covariance shift不同。covariance指的是模型在testing和training集的差，而ics就是梯度爆炸和梯度消失神马的）</p><p>ics：the change during training due to the change in parameters（《batch normalization》）</p><p>我擅自将其解释为类似梯度爆炸和梯度消失的问题</p><p>这是我第一次看到这个词的定义</p><p>但是相似描述的情景在densenet和resnet的论文中也有描述</p><p>过深的网络不好训练，训练的结果也不太好</p><p>现代很多网络的研究就在于解决这个问题</p><p>batch normalization通过标准化来解决这个问题，同时用两个可学习的参数去减轻标准化对特征的破坏</p><p>densenet和resnet都通过较远的神经元的连接的方式去减轻这个问题</p><p>当然resnet和densenet思路有点小不同</p><p>resnet想学习的是ΔW</p><p>densenet疯狂地追求前后连接</p><p>但本质差不多（densenet如是说）</p><h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>本文只是一个大二学生的粗鄙之语</p><p>自己还是论文看少了</p><p>比如resnet和densenet都提到的一个f什么net我就没看</p><p>还有其实很多问题，神经网络也不像我说的这么简单</p><p>就当以上内容纯属虚构和胡说八道吧</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;地铁上无聊码的，思路比较凌乱&lt;/p&gt;
+&lt;ol start=&quot;4&quot;&gt;
+&lt;li&gt;现代神经网络的目标&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;我认为，现代神经
+      
+    
+    </summary>
+    
+    
+      <category term="深度学习" scheme="http://yoursite.com/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
+    
+      <category term="神经网络实践经验" scheme="http://yoursite.com/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%AE%9E%E8%B7%B5%E7%BB%8F%E9%AA%8C/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>神经网络实践经验(3)</title>
+    <link href="http://yoursite.com/2018/06/02/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%AE%9E%E8%B7%B5%E7%BB%8F%E9%AA%8C-3/"/>
+    <id>http://yoursite.com/2018/06/02/神经网络实践经验-3/</id>
+    <published>2018-06-02T09:13:42.000Z</published>
+    <updated>2018-06-02T09:18:56.308Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="3-慎用keras的binary-crossentropy"><a href="#3-慎用keras的binary-crossentropy" class="headerlink" title="3. 慎用keras的binary_crossentropy"></a>3. 慎用keras的binary_crossentropy</h2><p>有的时候我们在用神经网络训练二分类模型的时候，我们常会用keras。keras关于二分类的loss function有两个，一个是binary_crossentropy，一个是categorical_crossentropy（其实是多分类）。但是据本人实测，用binary_ceossentropy的训练效果非常差，几乎训练不出东西，所以暂时推荐使用categorical_crossentropy</p><p>至于为什么我也不知道，可能和内部写法有关但是我也没看keras内部实现</p><p>没有调查就没有发言权，对吧</p><p>所以先占个坑，知道了再补</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;3-慎用keras的binary-crossentropy&quot;&gt;&lt;a href=&quot;#3-慎用keras的binary-crossentropy&quot; class=&quot;headerlink&quot; title=&quot;3. 慎用keras的binary_crossentropy&quot;&gt;&lt;/
+      
+    
+    </summary>
+    
+    
+      <category term="深度学习" scheme="http://yoursite.com/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
+    
+      <category term="神经网络实践经验" scheme="http://yoursite.com/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%AE%9E%E8%B7%B5%E7%BB%8F%E9%AA%8C/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>神经网络实践经验(2)</title>
+    <link href="http://yoursite.com/2018/06/02/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%AE%9E%E8%B7%B5%E7%BB%8F%E9%AA%8C-2/"/>
+    <id>http://yoursite.com/2018/06/02/神经网络实践经验-2/</id>
+    <published>2018-06-02T09:07:42.000Z</published>
+    <updated>2018-06-02T09:18:56.269Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本人萌新，请多指教</p><h2 id="2-1x1卷积层的作用"><a href="#2-1x1卷积层的作用" class="headerlink" title="2. 1x1卷积层的作用"></a>2. 1x1卷积层的作用</h2><p>我们都知道，CNN强于MLP的地方在于其局部连接性减少了过拟合的可能，从而在有限的数据量下可以获取更好的模型。</p><p>而CNN是一个基于上下文的网络。对于上下文相关的数据（图像、自然语言等），有着非常理所应当、有理有据的好效果。但是如果filter的大小是1x1呢（本文只探讨2d的CNN，如果要强行说Conv1D我也没办法）?</p><p>1x1的filter貌似是上下文无关的。所以1x1的filter与3x3的filter和5x5的filter有着完全不一样的功能。</p><p>本萌新读的论文不多，但我记得1x1filter在VGG论文<a href="http://x-algo.cn/wp-content/uploads/2017/01/VERY-DEEP-CONVOLUTIONAL-NETWORK-SFOR-LARGE-SCALE-IMAGE-RECOGNITION.pdf" target="_blank" rel="noopener">VERY DEEP CONVOLUTIONAL NETWORKS FOR LARGE-SCALE IMAGE RECOGNITION</a>中出现过。VGG指出有1x1的卷积层（VGG的C号架构）物体识别效果比没有（VGG的B号架构）效果好，但是没有3x3的卷积层（VGG的D号架构）效果好。但是并没有给出解释。（顺便一提我认为VGG是ImageNet几篇中最水的一篇，全篇就是在说他用了谁的方法没用谁的方法然后做做做做做实验）</p><p>然后1x1的使用比较引起轰动就是在<a href="https://arxiv.org/pdf/1312.4400.pdf" target="_blank" rel="noopener">Network in Network</a>中。《Network in Network》整篇论文写的玄乎得要死，什么mlpconv啊什么得，但是实际上观察它得代码就会发现所谓得mlpconv就是1x1得卷积层。仔细想想也是那么回事，实际上1x1的filter由于卷积神经网络的操作已经可以退化为卷积层每个通道的加权求和，然后通过一层激活函数就和单层mlp无异。虽然3x3的卷积核也会有加权求和的操作，但是1x1的卷积核是脱离了上下文的加权求和操作，而3x3是带上下文的加权求和操作</p><p><img src="/2018/06/02/神经网络实践经验-2/nin.png" alt="Network in network"></p><p>再然后就是Inception中的降维1x1了，我可以将一个28x28x64的卷积层强行压到28x28x20的卷积层，既不增加很多参数数量又能减少卷积层的参数数量，还能加权求和一波，简直非常好用。</p><p><img src="/2018/06/02/神经网络实践经验-2/inception.png" alt="inception"></p><p>包括resNet中的先降维后升维的操作同理，既可以降低参数数量又可以保持x与F(x)形状不变，可以说是很棒了<img src="/2018/06/02/神经网络实践经验-2/C:/Users\11145\Desktop\bimg\resNet.png" alt="resNet"></p><p><img src="/2018/06/02/神经网络实践经验-2/resNet.png" alt="resnet"></p><p>所以总结一下，1x1的filter的作用是</p><ol><li>增加通道之间的交流</li><li>降维或升维</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;本人萌新，请多指教&lt;/p&gt;
+&lt;h2 id=&quot;2-1x1卷积层的作用&quot;&gt;&lt;a href=&quot;#2-1x1卷积层的作用&quot; class=&quot;heade
+      
+    
+    </summary>
+    
+    
+      <category term="深度学习" scheme="http://yoursite.com/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
+    
+      <category term="神经网络实践经验" scheme="http://yoursite.com/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%AE%9E%E8%B7%B5%E7%BB%8F%E9%AA%8C/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>神经网络实践经验(1)</title>
+    <link href="http://yoursite.com/2018/06/02/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%AE%9E%E8%B7%B5%E7%BB%8F%E9%AA%8C-1/"/>
+    <id>http://yoursite.com/2018/06/02/神经网络实践经验-1/</id>
+    <published>2018-06-02T08:54:58.000Z</published>
+    <updated>2018-06-02T09:18:27.029Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本系列是本人记录在自己实践中遇到的很多读死书无法学习到的经验，不完全脱离理论，甚至说是超过理论之外的东西。</p><p>本人水平很差（深度学习之耻），有些说的简陋的东西也当是献丑了。</p><h4 id="1-神经网络的输入最好有一定相关性，否则很容易产生过拟合的效果"><a href="#1-神经网络的输入最好有一定相关性，否则很容易产生过拟合的效果" class="headerlink" title="1. 神经网络的输入最好有一定相关性，否则很容易产生过拟合的效果"></a>1. 神经网络的输入最好有一定相关性，否则很容易产生过拟合的效果</h4><p>所谓的过拟合，就是模型学习到本应该学习到的特征之外的特征。</p><p><img src="/2018/06/02/神经网络实践经验-1/image1.bmp" alt="图一"></p><p>如图，本来模型只应该学习到x，$x^2$ 和常数项的特征，但是由于模型的容量（capacity）太大，模型学习到了$x^3$ 和$x^4$的特征。所以造成最后模型的扭曲。</p><p>过拟合的问题大家肯定都懂，模型在testing数据集和training数据集的差异会非常大，在training集上表现非常好的数据在testing集上会非常差。</p><p><img src="/2018/06/02/神经网络实践经验-1/image2.bmp" alt="图二"></p><p>在神经网络中最常用的正则化方法是Dropout。</p><p>同时我们应该去了解一下神经网络中的全连接层。全连接层在数据于数据之中找关系，提取输入数据的浅层特征与深层特征并且将这些特征映射到类别中（此处我只说的是多分类，其他的工作暂时不讲）。也就是说在全连接层中它寻找的输入每个神经元与神经元之间的联系。</p><p>从某种意义上来说，神经网络就是个高超的特征工程器。</p><p>在某些时候，我们为了去做多分类，会去试着去找无关（前置知识）的特征然后作为输入扔给神经网络。甚至是两个相互无关（前置知识）的向量拼接之后扔给神经网络。</p><p>不得不说，这是非常蠢的想法。</p><p>我们迫使神经网络去找到已知无关的数据的联系特征，这本身就可能然神经网络产生过拟合。</p><p>就比如，我现在用多层感知机(MLP)做推荐系统，有user向量<strong>u</strong>也有item向量<strong>i</strong> ，user和item没有直接关联，我们将<strong>u</strong>与<strong>i</strong>拼接并直接扔给MLP。MLP学习到了user的特征还有item的特征，还有……user中某个神经元和item某个神经元的联系。</p><p>单单用脑子想想就知道，我们会学习到很多在推荐系统中一点用都没有的特征，相当于神经网络瞎做特征工程，然后过拟合了，即时加了Dropout也没用。</p><p>为什么使用神经网络去处理图像的效果好？因为本身图像就是一个上下文相关的数据，很多像素点的集合不叫有意义的图像，像素点与像素点连接所构成的有意义的数据才能叫有意义的图像。但是图像本身是局部相关，我左下角的像素点可能和右上角的像素点一点关系都没有，但是左下角的像素点只与它周围一圈的像素点有关，所以CNN较MLP更适合Computer Vision。</p><p>NLP同理（虽然我不懂XD）。</p><p>这个时候我们应该做什么呢？</p><p>本人认为，应该试着使用CNN这种局部特征网络。并且可以试着在<strong>u</strong>和<strong>i</strong>拼接处加上少许的0（数量大概是filter的大小减一），这样可以杜绝overfit</p><p>当然你说你数据量大你头铁那我也没办法，毕竟在深度学习中数据量大是可以为所欲为的。</p><p>图片来源：</p><p><a href="https://blog.csdn.net/willduan1/article/details/53070777" target="_blank" rel="noopener">https://blog.csdn.net/willduan1/article/details/53070777</a></p><p>图书 deep learning</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;本系列是本人记录在自己实践中遇到的很多读死书无法学习到的经验，不完全脱离理论，甚至说是超过理论之外的东西。&lt;/p&gt;
+&lt;p&gt;本人水平很差（深度
+      
+    
+    </summary>
+    
+    
+      <category term="深度学习" scheme="http://yoursite.com/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
+    
+      <category term="神经网络实践经验" scheme="http://yoursite.com/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%AE%9E%E8%B7%B5%E7%BB%8F%E9%AA%8C/"/>
+    
+  </entry>
+  
+</feed>
