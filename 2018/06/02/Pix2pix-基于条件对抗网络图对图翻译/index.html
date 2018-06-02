@@ -162,15 +162,15 @@ the man who masters shallow dropout
 <p>自编码器与CNN，为了使loss function更小而不得不使生成出来的图片模糊。这些对loss function有益的行为最终导致的是生成很假的图片（讲个道理，模糊的原因与很多自编码器采取sigmoid有没有关系？笔者觉得使用leaky relu可能会减少模糊，但是笔者试过，效果不算好）GAN提供了一种生成精准图片的方法，原因是识别网络完全能判断出模糊的图像是假图。</p>
 <p>这在里，作者使用了条件GAN（cGAN）去学习一个条件生成模型。</p>
 <h2 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h2><h3 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h3><p>cGAN的损失可以表达为：</p>
-<p>$\mathcal{L}<em>{cGAN}(G,D)=\mathbb{E}</em>\mathrm{x,y}[log D(x, y)]+\mathbb{E}_\mathrm{x,z}[log(1-D(x, G(x,z)))]$</p>
+<p><img src="/2018/06/02/Pix2pix-基于条件对抗网络图对图翻译/f1.png" alt="f1"></p>
 <p>可以看出，较普通的GAN来说，cGAN的生成网络监听了输入x。</p>
 <p>普通的GAN的形式是</p>
-<p>$\mathcal{L}<em>{GAN}(G,D)=\mathbb{E}</em>\mathrm{y}[log D(x, y)]+\mathbb{E}_\mathrm{x,z}[log(1-D(x, G(x,z)))]$</p>
+<p><img src="/2018/06/02/Pix2pix-基于条件对抗网络图对图翻译/f2.png" alt="f2"></p>
 <p>可以明显看出，这个形式的生成网络不需要输入x</p>
 <p>研究表明如果给GAN加上一个传统距离（regularization?），比如L2，GAN的表现更好。而Pix2pix使用的是L1架构，可以减少模糊程度</p>
-<p>$\mathcal{L}<em>{L1}(G)=\mathbb{E}</em>\mathrm{x,y,z}[\Arrowvert y-G(x,z)\Arrowvert_1]$</p>
+<p><img src="/2018/06/02/Pix2pix-基于条件对抗网络图对图翻译/f3.png" alt="f3"></p>
 <p>所以最终的loss function是</p>
-<p>$G^*=argmin_Gmax_D\mathcal{L}<em>{cGAN}(G,D)+\lambda\mathcal{L}</em>{L1}(G)$</p>
+<p><img src="/2018/06/02/Pix2pix-基于条件对抗网络图对图翻译/f4.png" alt="f1"></p>
 <p>原版GAN中的噪音noise，在这里变成了dropout形似的</p>
 <p>###网络架构</p>
 <h4 id="生成网络：U-net"><a href="#生成网络：U-net" class="headerlink" title="生成网络：U-net"></a>生成网络：U-net</h4><p>由于是个conditional GAN，这个生成者是个自编码器（输入一张图片大小，输出一张图片大小）。但是较传统用自编码器的写法不同，作者使用了U-Net<br><img src="/2018/06/02/Pix2pix-基于条件对抗网络图对图翻译/Unet.bmp" alt="Unet"></p>
