@@ -150,8 +150,7 @@ the man who masters shallow dropout
   </header>
 
   <section class="post">
-    <p>##前言</p>
-<p>苦逼本科生要考试，考试还奇难内容齐多</p>
+    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>苦逼本科生要考试，考试还奇难内容齐多</p>
 <p>这里我整理一下考试提纲</p>
 <p>正好这也是对《unix环境高级编程》的前半部分的一个总结</p>
 <p>就当看着乐</p>
@@ -511,7 +510,7 @@ the man who masters shallow dropout
 <p><code>int fstat(int fd, struct stat * buf);</code></p>
 <p>所得到的stat结构体中的<code>st_mode</code>得到。他的类型是<code>mode_t</code></p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">stat</span> * <span class="title">buf</span> = <span class="title">NULL</span>;</span></span><br><span class="line">	<span class="keyword">int</span> result = fstat(<span class="number">3</span>, buf);</span><br><span class="line">    <span class="keyword">if</span>(result == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// this is success</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%s \n"</span>, buf.st_mode);</span><br><span class="line">        <span class="keyword">if</span>(buf.st_mode == S_ISREG)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"yes, it is a regular file"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;<span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>##结语<br>有同校交友的吗……我的QQ号是1114599115，有没有小姐姐来加好友啊，我好寂寞啊~</p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>有同校交友的吗……我的QQ号是1114599115，有没有小姐姐来加好友啊，我好寂寞啊~</p>
 
   </section>
 
