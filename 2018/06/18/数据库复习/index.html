@@ -245,10 +245,33 @@ the man who masters shallow dropout
 <ol>
 <li><p>如果两个表中有相同的属性，则应该用表名唯一表示</p>
 <p>用书上的例子</p>
-<p>| client.clientNo | fName | lName | Viewing.clientNo | propertyNo | comment |<br>| ————— | —– | —– | —————- | ———- | ——- |<br>| …             | …   | …   | …              | …        | …     |</p>
-<p>其中Client表和View表都有clientNo这个属性（具体什么意思不用管了）</p>
-<p>但是为了唯一标识，要把表名列出来</p>
 </li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>client.clientNo</th>
+<th>fName</th>
+<th>lName</th>
+<th>Viewing.clientNo</th>
+<th>propertyNo</th>
+<th>comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+</tbody>
+</table>
+<p>   其中Client表和View表都有clientNo这个属性（具体什么意思不用管了）</p>
+<p>   但是为了唯一标识，要把表名列出来</p>
+<ol start="2">
 <li><p>这个笛卡尔集使任意交叉，没有经过筛选，要筛选需要再用次选择</p>
 <p>$\sigma_{Client.clientNo = Viewing.clientNo}(\Pi_{clientNo, fName, lName}(Client) \times \Pi_{clientNo, propertyNo, comment}（Viewing)$</p>
 </li>
