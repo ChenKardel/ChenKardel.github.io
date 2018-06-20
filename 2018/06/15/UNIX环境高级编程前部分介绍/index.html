@@ -159,14 +159,29 @@ the man who masters shallow dropout
 <p>Linux是一个基于POSIX和UNIX的多用户、多任务、支持多线程的开源的由Linus开发的操作系统</p>
 <p>Linux是基于UNIX而构造的。</p>
 <h3 id="UNIX操作系统有哪些典型的分支？"><a href="#UNIX操作系统有哪些典型的分支？" class="headerlink" title="UNIX操作系统有哪些典型的分支？"></a>UNIX操作系统有哪些典型的分支？</h3><p>Solaris，Linux，HP-UX，FreeBSD，SunOS，MacOS</p>
+<h3 id="程序运行时，堆栈如何变化？什么是数据帧或活动记录？bp和sp指针在函数运行过程中是如何变化的？"><a href="#程序运行时，堆栈如何变化？什么是数据帧或活动记录？bp和sp指针在函数运行过程中是如何变化的？" class="headerlink" title="程序运行时，堆栈如何变化？什么是数据帧或活动记录？bp和sp指针在函数运行过程中是如何变化的？"></a>程序运行时，堆栈如何变化？什么是数据帧或活动记录？bp和sp指针在函数运行过程中是如何变化的？</h3><p>新的栈中变量会在地址低的位置，新的堆中变量会在地址高的位置。</p>
+<p>栈是向低地址延伸的，堆是向高地址延伸的。</p>
+<p>（这里的数据帧是不是栈帧啊……我google只查到计算机网络相关的数据帧）</p>
+<p>（具体看编译原理）</p>
+<p>过程活动记录，又称栈帧，栈帧包含了局部变量，函数试产，临时值等数据信息以及必要的控制信息。</p>
+<p>在函数调用过程中，会讲被调用者的过程活动记录以堆栈的形式存储</p>
+<p>函数的调用过程中，bp会保存当前栈帧的起始地址（保持不变），sp指示栈顶的位置。随着函数运行有出栈入栈的操作，sp的值会随之发生变化。</p>
+<p>每当函数调用时，会把被调用者栈帧中的bp压栈，然后讲当前的sp赋给bp表示这是被调用者的栈帧起始地址，然后再讲参数通过bp放入(bp+4*n)的地址</p>
+<blockquote>
+<h3 id="函数调用"><a href="#函数调用" class="headerlink" title="函数调用"></a>函数调用</h3><p>​    <a href="javascript:void(" target="_blank" rel="noopener">调用过程</a>)涉及到计算机CPU内部的一些概念，最主要的有栈(stack)、栈帧(fram stack)、返回值(一般通过ax寄存器)、基址寄存器(bp)、栈寄存器(sp)、指令指针寄存器(ip)等。言简意赅的说，每个函数在运行过程中，在栈上都以栈帧的形式保存临时变量，也就是中间结果。如果它还调用其他函数，需要传递的参数也是通过栈帧来传递的(不同体系结构可能不一样)。每个栈帧有开始和结束，bp寄存器保存当前栈帧的起始位置(保持不变)，sp指示栈顶的位置，随着函数运行会有出栈、入栈操作，sp的值会随之发生变化。ip始终指向下一个运行的汇编代码的虚拟地址。调用函数(caller)在调用被调函数(callee)之前，首先会把参数压栈，然后运行call <function>指令，CPU就会把当前过程的下一条指令的地址压栈(这一步是CPU自动执行的，汇编代码看不出栈的变化)，以便调用返回时继续执行；还会保存标志位寄存器flag和段寄存器cs(视不同调用类型而定)。callee运行，首先会把caller栈帧的bp压栈(返回时需要恢复)，然后将当前的sp赋值给bp，表明这时的bp是callee的栈帧起始地址；然后取出caller传进来的参数(在caller栈帧中，通过bp寄存器为参考点获取参数，（bp+8),(bp+12)…）。这里可能会有点困惑的是(bp+0)，(bp+4)的内容是什么？上面说到进入callee后首先要做的就push %bp，此处的bp寄存器保存的是上一栈帧的起始位置。而进入callee必须保存上一过程的返回地址。这样就清楚了(bp+0)的值是上一个过程的栈帧值，(bp+4)是callee返回后caller执行的下一个指令地址。通过这样的<a href="javascript:void(" target="_blank" rel="noopener">函数调用规约</a>)，程序运行时的每次调用就能准确无误。如果有返回值，一般以ax寄存器传递返回值，那么在返回caller后，需保存ax寄存器的值。</function></p>
+</blockquote>
+<p><a href="http://www.voidcn.com/article/p-hbhzzkdh-ec.html" target="_blank" rel="noopener">函数调用与递归</a></p>
+<h3 id="UNIX环境下编程共同遵循的规范有哪些？“Least-Surprise”是什么意思？"><a href="#UNIX环境下编程共同遵循的规范有哪些？“Least-Surprise”是什么意思？" class="headerlink" title="UNIX环境下编程共同遵循的规范有哪些？“Least Surprise”是什么意思？"></a>UNIX环境下编程共同遵循的规范有哪些？“Least Surprise”是什么意思？</h3><p>KISS(Keep It Simple, Stupid)</p>
+<p>还有其他的？UNIX哲学？</p>
+<p>Least Surprise 是减少不必要的创新，从而减少用户的学习成本</p>
+<p><a href="https://www.linuxtopia.org/online_books/programming_books/art_of_unix_programming/ch01s06_9.html" target="_blank" rel="noopener">The Art of Unix Programming</a></p>
 <h3 id="什么是Shell？内置变量-、-、-、-、-的具体含义是什么？"><a href="#什么是Shell？内置变量-、-、-、-、-的具体含义是什么？" class="headerlink" title="什么是Shell？内置变量$、$*、$@、$?、$#的具体含义是什么？"></a>什么是Shell？内置变量$、$*、$@、$?、$#的具体含义是什么？</h3><p><code>$$</code> 指当前shell进程的pid</p>
 <p><code>$*</code>指的是传递给脚本的所有参数</p>
 <p><code>$@</code>也是把所有参数传递给脚本，但是当参数被双引号包含的时候，<code>$*</code>会把所有的参数作为一个整体，而<code>$@</code>会将各个参数分开</p>
 <p><code>$?</code>指的是上个命令的退出状态，或函数返回值</p>
 <p><code>$#</code>指的是传递给脚本或函数的参数个数</p>
 <p><a href="https://www.cnblogs.com/davygeek/p/5670212.html" target="_blank" rel="noopener">Shell特殊变量：Shell  \$0, \$#, \$*, \$@, \$?, \$$和命令行参数</a></p>
-<p>###常用的Shell命令，如ls、cd、dd、pwd、ps、cp、chown、chmod、mkdir、size等的具体用法。</p>
-<p>ls (list)列出所有文件</p>
+<h3 id="常用的Shell命令，如ls、cd、dd、pwd、ps、cp、chown、chmod、mkdir、size等的具体用法。"><a href="#常用的Shell命令，如ls、cd、dd、pwd、ps、cp、chown、chmod、mkdir、size等的具体用法。" class="headerlink" title="常用的Shell命令，如ls、cd、dd、pwd、ps、cp、chown、chmod、mkdir、size等的具体用法。"></a>常用的Shell命令，如ls、cd、dd、pwd、ps、cp、chown、chmod、mkdir、size等的具体用法。</h3><p>ls (list)列出所有文件</p>
 <p>cd (change directory)换工作目录</p>
 <p>dd (disk dump)指定大小拷贝文件</p>
 <p>pwd (print working directory)打印工作目录</p>
@@ -528,7 +543,6 @@ the man who masters shallow dropout
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">stat</span> <span class="title">buf</span>;</span></span><br><span class="line">    <span class="keyword">int</span> result = stat(<span class="string">"../test.c"</span>, &amp;buf);</span><br><span class="line">    <span class="keyword">if</span>(result == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(S_ISREG(buf.st_mode))</span><br><span class="line">        &#123;</span><br><span class="line"></span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"yes, it is a regular file"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"this is not a reg file!"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"read error"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>结果</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yes, it is a regular file</span><br></pre></td></tr></table></figure>
-<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>有同校交友的吗……我的QQ号是1114599115，有没有小姐姐来加好友啊，我好寂寞啊~</p>
 
   </section>
 
