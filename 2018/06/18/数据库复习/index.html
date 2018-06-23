@@ -433,7 +433,7 @@ the man who masters shallow dropout
 <p>通过<code>WITH CHECK OPTION</code>限制迁移行。</p>
 <p>有两个选项<code>CASCADED</code>和<code>LOCAL</code>，默认情况下都是<code>CASCADED</code></p>
 <p><code>CASCADED</code>使任何对这个视图或其他的从这个视图创建的视图的插入与修改操作不得使行消失</p>
-<p><code>LOCAL</code>使任何对这个视图或其他的从这个视图中创建的视图的插入和修改操作不得使行消失，除非在从这个视图中创建的所有视图这一行也消失了（不满足所有派生视图(derived view)的条件）</p>
+<p><code>LOCAL</code>使任何对这个视图或其他的从这个视图中创建的视图的插入和修改操作不得使行消失，除非在从这个视图中父的所有视图这一行也消失了（不满足所有派生视图(derived view)的条件）</p>
 <h5 id="视图分解"><a href="#视图分解" class="headerlink" title="视图分解"></a>视图分解</h5><p>视图分解时在查询视图的过程中，将用作视图定义的查询与在视图上的查询合并</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">VIEW</span> view1 <span class="keyword">AS</span></span><br><span class="line"><span class="keyword">SELECT</span> A0, A1 <span class="keyword">FROM</span> A</span><br><span class="line"><span class="keyword">WHERE</span> A0 = <span class="number">1</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> A0 <span class="keyword">FROM</span> A <span class="keyword">WHERE</span> A1 = <span class="number">3</span></span><br></pre></td></tr></table></figure>
