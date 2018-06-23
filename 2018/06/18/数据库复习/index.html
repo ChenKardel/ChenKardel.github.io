@@ -150,7 +150,7 @@ the man who masters shallow dropout
   </header>
 
   <section class="post">
-    <h1 id="数据库复习"><a href="#数据库复习" class="headerlink" title="数据库复习"></a>数据库复习</h1><h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><p>注：定义性质的我都用<em>斜体</em> 标注</p>
+    <h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><p>注：定义性质的我都用<em>斜体</em> 标注</p>
 <h3 id="数据库系统的特点和概念"><a href="#数据库系统的特点和概念" class="headerlink" title="数据库系统的特点和概念"></a>数据库系统的特点和概念</h3><h4 id="三层模式"><a href="#三层模式" class="headerlink" title="三层模式"></a>三层模式</h4><p>三层模式是指ANSI-SPARC体系结构</p>
 <p><em>三层体系结构指的是外部层、概念层和内部层</em> </p>
 <p>外部层提供视图，提供用户观察数据的视图</p>
@@ -233,8 +233,7 @@ the man who masters shallow dropout
 <li>集合交</li>
 <li>除<br>注意一下他们的符号</li>
 </ol>
-<p>#####选择：$\sigma$</p>
-<p>选择工资多余10000的员工：$\sigma_{salary&gt;1000}(Staff)$</p>
+<h5 id="选择：-sigma"><a href="#选择：-sigma" class="headerlink" title="选择：$\sigma$"></a>选择：$\sigma$</h5><p>选择工资多余10000的员工：$\sigma_{salary&gt;1000}(Staff)$</p>
 <h5 id="投影：-Pi"><a href="#投影：-Pi" class="headerlink" title="投影：$\Pi$"></a>投影：$\Pi$</h5><p>选出员工的staffNo，fName，lName，salary: </p>
 <p>$\Pi_{staffNo, fName, lName, salary}(Staff)$</p>
 <h5 id="并：-cup"><a href="#并：-cup" class="headerlink" title="并：$\cup$"></a>并：$\cup$</h5><p>$\Pi_{city}(Branch) \cup \Pi_{city}（PropertyForRent）$</p>
@@ -290,8 +289,8 @@ the man who masters shallow dropout
 </li>
 <li><p>外连接</p>
 <p>外连接是两张表，展示一张表所有内容，如果另一张表没有对应内容，则填null。</p>
-<p>左外连接：$\ltimes$ </p>
-<p>右外连接：$\rtimes$</p>
+<p>左外连接：$\rtimes$ </p>
+<p>右外连接：$\ltimes$</p>
 <p>开口指向展示所有内容的一边    </p>
 </li>
 <li><p>半连接算了吧</p>
@@ -314,16 +313,13 @@ the man who masters shallow dropout
 <h3 id="SQL语言"><a href="#SQL语言" class="headerlink" title="SQL语言"></a>SQL语言</h3><p>Structured Query Language</p>
 <p>SQL是DDL、DML、DQL、DCL的集成（扯什么犊子，都一箩筐）</p>
 <p>SQL 不区分大小写</p>
-<p>####DDL</p>
-<p>数据定义语言（Data Definition Language，DDL）用于定义数据库结构和数据的访问控制</p>
+<h4 id="DDL"><a href="#DDL" class="headerlink" title="DDL"></a>DDL</h4><p>数据定义语言（Data Definition Language，DDL）用于定义数据库结构和数据的访问控制</p>
 <p>几个命令</p>
 <ul>
 <li>CREATE</li>
 <li>ALTER</li>
 <li>DROP</li>
 <li>TRUNCATE</li>
-<li>GRANT</li>
-<li>REVOKE</li>
 </ul>
 <h4 id="DML"><a href="#DML" class="headerlink" title="DML"></a>DML</h4><p>数据操作语言（Data Manipulation Language，DML）用于检索和更新数据</p>
 <p>几个命令</p>
@@ -341,6 +337,8 @@ the man who masters shallow dropout
 <li>SAVEPOINT</li>
 <li>ROLLBACK</li>
 <li>SET TRASACTION</li>
+<li>GRANT</li>
+<li>REVOKE</li>
 </ul>
 <p>处理事务用</p>
 <p><a href="https://www.2cto.com/database/201610/555167.html" target="_blank" rel="noopener">DDL、DML和DCL的区别与理解</a> </p>
@@ -550,8 +548,7 @@ the man who masters shallow dropout
 <li>持久性：事务完成的结果要永久保存在数据库中（在外存保存）。</li>
 </ol>
 <p>隔离性和持久性保证了原子性和一致性</p>
-<p>####三个问题(四个)</p>
-<h5 id="丢失更新"><a href="#丢失更新" class="headerlink" title="丢失更新"></a>丢失更新</h5><p>一个用户的更新操作被另一个用户所取代了</p>
+<h4 id="三个问题-四个"><a href="#三个问题-四个" class="headerlink" title="三个问题(四个)"></a>三个问题(四个)</h4><h5 id="丢失更新"><a href="#丢失更新" class="headerlink" title="丢失更新"></a>丢失更新</h5><p>一个用户的更新操作被另一个用户所取代了</p>
 <p><img src="/2018/06/18/数据库复习/丢失更新.png" alt="丢失更新"></p>
 <h5 id="脏读"><a href="#脏读" class="headerlink" title="脏读"></a>脏读</h5><p>前提：允许一个事务看到另一个未提交事务的中间结果（违背隔离性）</p>
 <p><img src="/2018/06/18/数据库复习/脏读.png" alt="脏读"></p>
@@ -559,8 +556,7 @@ the man who masters shallow dropout
 <h5 id="不可重读问题"><a href="#不可重读问题" class="headerlink" title="不可重读问题"></a>不可重读问题</h5><p>在一个事务多次读取的时候另一个事务修改了数值，导致多次读取结果不一样</p>
 <p><img src="/2018/06/18/数据库复习/不一致问题.png" alt="不一致问题"></p>
 <h4 id="幻读"><a href="#幻读" class="headerlink" title="幻读"></a>幻读</h4><p>和不一致问题很像，但是是在query过程中</p>
-<p>####可串行化</p>
-<p>为了保证一致性，事务使用了可串行化方法</p>
+<h4 id="可串行化"><a href="#可串行化" class="headerlink" title="可串行化"></a>可串行化</h4><p>为了保证一致性，事务使用了可串行化方法</p>
 <p>可串行化中冲突操作的顺序是非常重要的：</p>
 <ol>
 <li>如果两个事务只读，那就没有冲突，顺序也不重要</li>
@@ -580,8 +576,7 @@ the man who masters shallow dropout
 </ol>
 <p>这个协议可以达到满足事务安全（解决那三个问题）的最快效率</p>
 <h4 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h4><p>定义大家都懂的~</p>
-<p>#####解决方案</p>
-<ol>
+<h5 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h5><ol>
 <li>超时</li>
 </ol>
 <p>设定一个极限时间，如果一个事务等待加锁的事务的等待时间超过它，则回滚此事务并重启</p>
