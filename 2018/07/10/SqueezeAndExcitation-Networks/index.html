@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="z">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    
+    <title>Squeeze-and-Excitation Networks | Kardel的希尔伯特空间</title>
+    <meta name="renderer" content="webkit">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta name="description" content="浅度辍学集大成者
+the man who masters shallow dropout">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Squeeze-and-Excitation Networks | Kardel的希尔伯特空间">
+    <meta name="twitter:description" content="浅度辍学集大成者
+the man who masters shallow dropout">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Squeeze-and-Excitation Networks | Kardel的希尔伯特空间">
+    <meta property="og:description" content="浅度辍学集大成者
+the man who masters shallow dropout">
+
+    
+    <meta name="author" content="kardel">
+    
+    <link rel="stylesheet" href="/css/vno.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+
+    
+    <link rel="icon" href="/images/avatar-icon.png">
+    
+
+    <meta name="generator" content="hexo"/>
+    
+    <link rel="alternate" type="application/rss+xml" title="Kardel的希尔伯特空间" href="/atom.xml">
+    
+
+    <link rel="canonical" href="http://ChenKardel.github.io/2018/07/10/SqueezeAndExcitation-Networks/"/>
+
+                 
+</head>
+
+<body class="home-template no-js">
+    <script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <span class="mobile btn-mobile-menu">
+        <i class="fa fa-list btn-mobile-menu__icon"></i>
+        <i class="fa fa-angle-up btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+<header class="panel-cover panel-cover--collapsed" style="background-image: url(/images/background-cover.jpg)">
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        <a href="/" title="前往 Kardel的希尔伯特空间 的主页"><img src="/images/avatar.jpg" width="80" alt="Kardel的希尔伯特空间 logo" class="panel-cover__logo logo" /></a>
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage for Kardel的希尔伯特空间">Kardel的希尔伯特空间</a></h1>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">浅度辍学集大成者
+the man who masters shallow dropout
+</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+
+        <div class="navigation-wrapper">
+          <div>
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+              <li class="navigation__item"><a href="/#blog" title="Visit the blog" class="blog-button">Blog</a></li>
+            
+              <li class="navigation__item"><a href="/aboutme">关于我</a></li>
+            
+            </ul>
+          </nav>
+          </div>
+          <div>
+          <nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+  <!-- Weibo-->
+  
+
+  <!-- Github -->
+  
+  <li class="navigation__item">
+    <a href="https://github.com/ChenKardel" title="GitHub" target="_blank">
+      <i class='social fa fa-github'></i>
+      <span class="label">Github</span>
+    </a>
+  </li>
+
+
+<!-- Stack Overflow -->
+        
+
+  <!-- Google Plus -->
+  
+
+<!-- Facebook -->
+
+  
+<!-- Twitter -->
+
+  
+
+  <li class="navigation__item">
+    <a href="/atom.xml" title="RSS" target="_blank">
+      <i class='social fa fa-rss'></i>
+      <span class="label">RSS</span>
+    </a>
+  </li>
+
+
+
+  </ul>
+</nav>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay cover-purple"></div>
+  </div> 
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <article class="post-container post-container--single">
+
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="2018-07-10T09:56:38.000Z" class="post-list__meta--date date">2018-07-10</time> &#8226; <span class="post-meta__tags tags">于 
+  <a class="tag-link" href="/tags/深度学习/">深度学习</a>, <a class="tag-link" href="/tags/计算机视觉/">计算机视觉</a>, <a class="tag-link" href="/tags/论文解析/">论文解析</a>
+ </span>
+      <span class="page-pv">
+       Read <span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>
+      </span> 
+   
+    </div>
+    <h1 class="post-title">Squeeze-and-Excitation Networks</h1>
+  </header>
+
+  <section class="post">
+    <p>这篇是ImageNet2017的winner。虽然说ImageNet这个比赛已经凉了，但是SENet还是有一定借鉴的地方的。而且SENet最好的地方在于其高度扩展性。所以SENet配合各种Residual啊Inception啊都是可以的</p>
+<p>SENet有点玄。</p>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>SENet解决的是图像多分类问题</p>
+<p>SENet提出一种神经网络的performance的提升方式是将无需更多的监督（参数）能够获取空间相关性的学习机制显式潜入到网络中。</p>
+<p>Inception就是通过这种方式提升performance的。</p>
+<p>SENet是通过对特征于特征之间的内部关系进行建模从而提升模型的表现力的。</p>
+<p>为此，SENet使用了一些机制完成了<strong>特征再标准</strong> (feature recalibration)，即通过全局信息去有选择地强调一些重要的特征和压制一些不重要的特征</p>
+<p>对于下面卷积神经网络的映射</p>
+<p>$F_{tr}:X\rightarrow U 其中 X \in \mathbb{R}^{H’ \times W’\times C’}, U \in \mathbb{R}^{H \times W \times C}$</p>
+<p>我们可以建立对应的SE块以如下手段使其完成特征再标准：</p>
+<ol>
+<li>特征U通过<strong>挤压</strong>(Squeeze)过程，挤压可以聚集特征的空间维度$H\times W$信息从而产生一个通道描述符。</li>
+<li>通过<strong>激励</strong>(Excitation)过程，可以通过每一通道的自门机制学习到样本特定的激活程度</li>
+</ol>
+<p>通过这两个操作，特征映射U可以重新获得权重</p>
+<p>通过简单的堆叠SE块，我们可以生成一个SE网络</p>
+<p>在网络架构中，SE块可以作为一个原来块的简单的替换原件</p>
+<p>然而即使块可以插入到任何深度，他在不同的深度下是有不同的意义的。</p>
+<p>在浅层，它通过一个类不可知的方式（class agnostic manner）去激励信息特征，加强共享的浅层特征的质量</p>
+<p>在深层，SE块变的有专一性，并且对于不同的输入有不同的类特别的回答方式</p>
+<p>并且，特征再标准的效益会不断累积下来，作用于整个神经网络</p>
+<h2 id="具体内容"><a href="#具体内容" class="headerlink" title="具体内容"></a>具体内容</h2><p>SE 块是一个计算单元</p>
+<p>卷积核之间的关系由它们的空间信息所捕获</p>
+<p>而SE块的目的是去保证网络可以增加对信息特征的敏感并且更好的用于之后的变换，并且压制一些不算很有用的卷积核</p>
+<p><img src="/2018/07/10/SqueezeAndExcitation-Networks/general.png" alt="general"></p>
+<p>分为两个步骤</p>
+<h3 id="挤压（Squeeze）"><a href="#挤压（Squeeze）" class="headerlink" title="挤压（Squeeze）"></a>挤压（Squeeze）</h3><p>挤压解决的一个问题是对于卷积核范围之外的感受野的学习。一般限于卷积核大小，CNN对上下文的学习很有限。有的神经网络（Inception，VGG）尝试使用5 <em> 5的卷积核去学习，但是一来5 </em> 5的卷积核需要更多的参数，二来5 * 5也未必能够解决问题。</p>
+<p>为了减轻这个问题，SE块先将每个channel的结果用全局平均池化(Global Average Pooling)挤压成一个1 * 1的通道描述符。</p>
+<p>Global Average Pooling的大致操作如下:</p>
+<p>$\mathit{z}<em>{c} = F</em>{sq}(u_{c})={1\over {H \times W}}\sum_{i=1}^H\sum^W_{j=1}u_c(i,j)$</p>
+<p>原来的$\mathbb{R}^{H \times W \times C}$被压成了$\mathbb{R}^{1 \times 1 \times C}$ </p>
+<h3 id="激励（Excitation）"><a href="#激励（Excitation）" class="headerlink" title="激励（Excitation）"></a>激励（Excitation）</h3><p>为了利用挤压之后的数据，我们需要使用激励去抓住通道与通道之间的依赖关系</p>
+<p>激励操作需要有两个要求：</p>
+<ol>
+<li>灵活，可以描述到非线性关系</li>
+<li>它学习到的是不互斥关系（这里原文的描述有点意思：我们想要保证我们所强调的不是one-hot激活，我将其理解我一个表征可以被多个卷积核所学习到，而不是一个表征仅被一个卷积核所学习。否则卷积核之间也不存在什么大关系）</li>
+</ol>
+<p>SE块使用了一个双层的神经网络去学习这个操作</p>
+<p>$s=F_{ex}(z, W)=\sigma_2(g(z,W))=\sigma_2(W_2 \sigma_1(W_1z))$</p>
+<p>其中$\sigma_1$和$\sigma_2$都是激活函数$W_1\in \mathbb{R}^{C\times {C\over r}}$，$W_2\in\mathbb{R}^{ {C\over r} \times C}$ </p>
+<p>公式中没有标识偏转bias，但是其实就是Full Connection</p>
+<p>注意一下$W_1$和$W_2$的结构，为了减少计算复杂度并且帮助泛化，SE块使用了两层FC形成了一个瓶颈</p>
+<p>$r$是减少比例</p>
+<p>由于神经网络在低层比较一般，在高层比较特化，所以促进特征提取和类型特化的激励操作可以有益于表征的学习</p>
+<h3 id="综合"><a href="#综合" class="headerlink" title="综合"></a>综合</h3><p>操作结束后，将u和s乘起来</p>
+<p>$\widetilde{x_c}=F_{scale}(u_c, s_c)=s_c \cdotp u_c$</p>
+<h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><p>作者将SE块和Inception和ResNet结合起来，形成了SE-Inception和SE-ResNet。其实也侧面反映出SE块的灵活性</p>
+<p><img src="/2018/07/10/SqueezeAndExcitation-Networks/SEInception.png" alt="SEInception"></p>
+<p><img src="/2018/07/10/SqueezeAndExcitation-Networks/SEResNet.png" alt="SEResNet"></p>
+<p>这里我有个想法：因为Residual是两个或多个卷积层堆起来的，按照作者的写法就是两个或多个卷积层一个SE块。如果一个卷积层一个SE块的performance会不会更好？可以做一下实验</p>
+<p>值得一提的是，加过SE后的神经网络的performance都比没加过SE的要好</p>
+<p>实际上SE并没有增加多少参数数量，但是却能够增加卷积层之间的连接与依赖的。从某种意义上来说，我没发现SE的明显的缺点</p>
+<p>SE增加的参数数量为</p>
+<p>${2 \over r}\sum^S_{s=1}N_s \cdotp {C_s}^2$</p>
+<p>其中S是整个网络有多少层，$N_s$代表对于某一层SE重复了几次。</p>
+<p>PS：</p>
+<p>虽然是这么写的，但是我认为不完全是这么算</p>
+<p>对于$N_s\neq1$的情况下，作者的意思是每一层会重复的Excitation</p>
+<p>但我认为，这个情况下更好的选择应该是将一个Excitation设置成多层神经网络而不是二层</p>
+<p>所以假设$N_s$代表Excitation中有$2N_s$的神经网络层数</p>
+<p>那么参数数量为</p>
+<p>$\sum^S_{s=1} {(N_s-2) \cdotp { {C_s}^2}\over r^2} + { {2{C_s}^2}\over r}$</p>
+<p>但是我也不知道这样做的效果会怎么样。只能说有待实验</p>
+<h2 id="Appendix：减少比例r"><a href="#Appendix：减少比例r" class="headerlink" title="Appendix：减少比例r"></a>Appendix：减少比例r</h2><p>r是减少比例，是一个非常重要的超参数</p>
+<p>过小的r没有起到减少参数数量的目的</p>
+<p>过大的r会使表现力下降</p>
+
+  </section>
+
+</article>
+
+<section class="read-more">
+           
+    
+        
+        
+               
+            <div class="read-more-item">
+                <span class="read-more-item-dim">Older Post</span>
+                <h2 class="post-list__post-title post-title"><a href="/2018/06/18/数据库复习/" title="数据库复习">数据库复习</a></h2>
+                <p class="excerpt">
+                
+                概要注：定义性质的我都用斜体 标注
+数据库系统的特点和概念三层模式三层模式是指ANSI-SPARC体系结构
+三层体系结构指的是外部层、概念层和内部层 
+外部层提供视图，提供用户观察数据的视图
+概念层提供内、外部层的映射和必要的独立性
+内部层提供DBMS和操作系统观察和存储数据的结构。
+三层模式的优点
+                &hellip;
+                </p>
+                <div class="post-list__meta"><time datetime="2018-06-18T08:45:20.000Z" class="post-list__meta--date date">2018-06-18</time> &#8226; <span class="post-list__meta--tags tags">于 
+  <a class="tag-link" href="/tags/数据库/">数据库</a>, <a class="tag-link" href="/tags/课程复习/">课程复习</a>
+</span><a class="btn-border-small" href="/2018/06/18/数据库复习/">继续阅读</a></div>
+                       
+            </div>
+        
+     
+   
+   
+  
+</section>
+
+  
+
+            <footer class="footer">
+    <span class="footer__copyright">
+        &copy; 2018 kardel - 本站点采用 <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>
+       
+    </span>
+    <span class="footer__copyright">
+             - 基于 <a href="http://hexo.io">Hexo</a> 搭建，使用 <a href="https://github.com/monniya/hexo-theme-new-vno ">new-vno</a> 主题，由<a href="https://monniya.com ">@Monniya</a> 修改自 <a href="https://github.com/lenbo-ma/hexo-theme-vno" target="_blank">Vno</a>, 原创出自<a href="http://github.com/onevcat/vno" target="_blank">onevcat</a>
+         </span>
+       
+    
+  
+         <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"], linebreaks: { automatic:true }, EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50) },
+        tex2jax: { inlineMath: [ ["$", "$"], ["\\(","\\)"] ], processEscapes: true, ignoreClass: "tex2jax_ignore|dno",skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']},
+        TeX: {  noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } }, Macros: { href: "{}" } },
+        messageStyle: "none"
+    }); 
+    
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+   
+</footer>
+
+
+        </div>
+    </div>
+
+     
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-78918255-1', 'auto');
+	ga('send', 'pageview');
+</script>
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?9cdad07c755fa23f6aced510c6760e87";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    
+</body>
+</html>
