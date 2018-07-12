@@ -179,7 +179,7 @@ the man who masters shallow dropout
 <h3 id="挤压（Squeeze）"><a href="#挤压（Squeeze）" class="headerlink" title="挤压（Squeeze）"></a>挤压（Squeeze）</h3><p>挤压解决的一个问题是对于卷积核范围之外的感受野的学习。一般限于卷积核大小，CNN对上下文的学习很有限。有的神经网络（Inception，VGG）尝试使用5 <em> 5的卷积核去学习，但是一来5 </em> 5的卷积核需要更多的参数，二来5 * 5也未必能够解决问题。</p>
 <p>为了减轻这个问题，SE块先将每个channel的结果用全局平均池化(Global Average Pooling)挤压成一个1 * 1的通道描述符。</p>
 <p>Global Average Pooling的大致操作如下:</p>
-<p>$\mathit{z}<em>{c} = F</em>{sq}(u_{c})={1\over {H \times W}}\sum_{i=1}^H\sum^W_{j=1}u_c(i,j)$</p>
+<p><img src="/2018/07/10/SqueezeAndExcitation-Networks/formula1.png" alt="formula1"></p>
 <p>原来的$\mathbb{R}^{H \times W \times C}$被压成了$\mathbb{R}^{1 \times 1 \times C}$ </p>
 <h3 id="激励（Excitation）"><a href="#激励（Excitation）" class="headerlink" title="激励（Excitation）"></a>激励（Excitation）</h3><p>为了利用挤压之后的数据，我们需要使用激励去抓住通道与通道之间的依赖关系</p>
 <p>激励操作需要有两个要求：</p>
