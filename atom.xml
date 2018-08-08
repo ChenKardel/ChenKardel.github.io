@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://ChenKardel.github.io/"/>
-  <updated>2018-07-12T04:49:00.334Z</updated>
+  <updated>2018-08-08T10:06:53.392Z</updated>
   <id>http://ChenKardel.github.io/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>note1: Multinomial Logistic Loss</title>
+    <link href="http://ChenKardel.github.io/2018/08/08/note1-Multinomial-Logistic-Loss/"/>
+    <id>http://ChenKardel.github.io/2018/08/08/note1-Multinomial-Logistic-Loss/</id>
+    <published>2018-08-08T10:06:20.000Z</published>
+    <updated>2018-08-08T10:06:53.392Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="https://stats.stackexchange.com/questions/166958/multinomial-logistic-loss-vs-cross-entropy-vs-square-error" target="_blank" rel="noopener">stackOverflow</a></p><ul><li>task specific and empirical<br><strong>Multinomial Logistic Loss</strong> and <strong>Cross Entropy Loss</strong><br>$J(\theta)=-{1\over m}[\sum^m_{i=1}y^{(i)}\log{h_{\theta}}(x^{(i)}) + (1-y^{(i)})\log(1-h_{\theta}(x^{(i)}))]$</li></ul><p>for general case, it should be </p><p>$J(\theta)=-[\sum^m_{i=1}y^{(i)}\sum^K_{k=1}1{y^{(i)=k}}\log P(y^{(i)}=k|x^{(i)};\theta)]$</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;&lt;a href=&quot;https://stats.stackexchange.com/questions/166958/multinomial-logistic-loss-vs-cross-entropy-vs-square-error&quot; target=&quot;_blank&quot; rel
+      
+    
+    </summary>
+    
+    
+      <category term="笔记" scheme="http://ChenKardel.github.io/tags/%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
   
   <entry>
     <title>Squeeze-and-Excitation Networks</title>
@@ -64,9 +87,9 @@
     </summary>
     
     
-      <category term="课程复习" scheme="http://ChenKardel.github.io/tags/%E8%AF%BE%E7%A8%8B%E5%A4%8D%E4%B9%A0/"/>
-    
       <category term="数据库" scheme="http://ChenKardel.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+      <category term="课程复习" scheme="http://ChenKardel.github.io/tags/%E8%AF%BE%E7%A8%8B%E5%A4%8D%E4%B9%A0/"/>
     
   </entry>
   
@@ -91,9 +114,9 @@
     </summary>
     
     
-      <category term="unix" scheme="http://ChenKardel.github.io/tags/unix/"/>
-    
       <category term="课程复习" scheme="http://ChenKardel.github.io/tags/%E8%AF%BE%E7%A8%8B%E5%A4%8D%E4%B9%A0/"/>
+    
+      <category term="unix" scheme="http://ChenKardel.github.io/tags/unix/"/>
     
   </entry>
   
